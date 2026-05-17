@@ -118,6 +118,7 @@ module.exports = async function handler(req, res) {
     const doc = new PDFDocument({
       size: "A4",
       margins: { top: 50, bottom: 60, left: 50, right: 50 },
+      bufferPages: true,
       info: {
         Title: `CHIRON Medico-Legal Report — ${certificate.reportId}`,
         Author: "CHIRON — Medical Jurisprudence Intelligence System",
