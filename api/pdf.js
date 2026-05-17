@@ -90,7 +90,7 @@ module.exports = async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
-  const { report, certificate } = req.body;
+  const { report, certificate, confidence } = req.body;
 
   if (!report || !certificate) {
     return res.status(400).json({ error: "Missing report or certificate data." });
@@ -470,6 +470,45 @@ module.exports = async function handler(req, res) {
 
       doc.y = boxY + 64;
     });
+
+    // Confidence Scores Section
+    if (confidence && confidence.sections) {
+      if (doc.y > doc.page.height - 160) { doc.addPage(); doc.y = 50; }
+      doc.y += 10;
+      doc.save().font("Helvetica-Bold").fontSize(FS.small).fillColor(TEXT_LIGHT).text("AI CONFIDENCE SCORING (PER SECTION)", 50, doc.y).restore();
+      doc.y += 16;
+
+      confidence.sections.forEach(sec => {
+        if (doc.y > doc.page.height - 60) { doc.addPage(); doc.y = 50; }
+        const scoreColor = sec.score >= 8 ? "3a7d55" : sec.score >= 6 ? "c8a020" : "c05050";
+        const barWidth = Math.round((sec.score / 10) * 100);
+        const secY = doc.y;
+
+        doc.save().rect(50, secY, doc.page.width - 100, 0.5).fillColor("#1e2330").fill().restore();
+        doc.save().font("Courier").fontSize(8).fillColor("#" + scoreColor).text(`§${sec.num}`, 52, secY + 4).restore();
+        doc.save().font("Helvetica").fontSize(8).fillColor(TEXT).text(sec.title || "", 80, secY + 4, { width: 160 }).restore();
+        doc.save().font("Courier").fontSize(8).fillColor("#" + scoreColor).text(`${sec.score}/10`, doc.page.width - 80, secY + 4, { width: 28, align: "right" }).restore();
+
+        // Mini confidence bar
+        doc.save().rect(245, secY + 7, 100, 3).fillColor("#1e2330").fill().restore();
+        doc.save().rect(245, secY + 7, barWidth, 3).fillColor("#" + scoreColor).fill().restore();
+
+        if (sec.flag) {
+          doc.save().font("Helvetica-Oblique").fontSize(7).fillColor("#c8a020").text(`⚠ ${sec.flag}`, 80, secY + 16, { width: doc.page.width - 130 }).restore();
+          doc.y = secY + 28;
+        } else {
+          doc.y = secY + 18;
+        }
+      });
+
+      // Overall score
+      if (confidence.overallScore) {
+        doc.y += 4;
+        const ocColor = confidence.overallScore >= 8 ? "3a7d55" : confidence.overallScore >= 6 ? "c8a020" : "c05050";
+        doc.save().font("Helvetica-Bold").fontSize(FS.small).fillColor("#" + ocColor).text(`Overall Confidence Score: ${confidence.overallScore}/10`, 50, doc.y).restore();
+        doc.y += 16;
+      }
+    }
 
     // QR Code
     if (qrDataUrl) {

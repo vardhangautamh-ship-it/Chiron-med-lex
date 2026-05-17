@@ -14,8 +14,10 @@
       --gold:#d4a83a;--gold2:#8b6914;--gold3:#a07820;
       --text:#e8e2d5;--text2:#c8c4bc;--text3:#9a9aa8;--text4:#5a6070;--text5:#3a4050;
       --green:#3a7d55;--green-bg:#0c1f14;--green-border:#1a4028;
+      --yellow:#c8a020;--yellow-bg:#1a1500;--yellow-border:#3a3000;
+      --red:#c05050;--red-bg:#0f0a0a;--red-border:#3a1a1a;
       --purple:#7a5a80;--purple-bg:#0f0e10;--purple-border:#2a1a2e;
-      --red-bg:#0f0a0a;--red-border:#3a1a1a;--red:#c05050;
+      --blue:#4a7aa8;--blue-bg:#0a1520;--blue-border:#1a3050;
     }
     html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Source Serif 4',serif;}
 
@@ -63,9 +65,9 @@
     .tab.active{color:var(--gold);border-bottom-color:var(--gold2);}
 
     /* INPUT */
-    .input-zone{padding:18px 20px;border-bottom:1px solid #1a1e28;flex-shrink:0;}
+    .input-zone{padding:16px 20px;border-bottom:1px solid #1a1e28;flex-shrink:0;}
     .input-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--text5);margin-bottom:8px;}
-    .case-textarea{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:12px 14px;color:var(--text2);font-family:'Source Serif 4',serif;font-size:13.5px;line-height:1.7;resize:vertical;min-height:130px;outline:none;transition:border-color .15s;}
+    .case-textarea{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:12px 14px;color:var(--text2);font-family:'Source Serif 4',serif;font-size:13.5px;line-height:1.7;resize:vertical;min-height:120px;outline:none;transition:border-color .15s;}
     .case-textarea::placeholder{color:#2a3040;font-style:italic;}
     .case-textarea:focus{border-color:var(--gold2);}
     .controls-row{display:flex;align-items:center;justify-content:space-between;margin-top:10px;gap:10px;flex-wrap:wrap;}
@@ -77,17 +79,23 @@
     .analyze-btn:hover{background:var(--gold3);}
     .analyze-btn:disabled{background:#2a2410;color:#4a4030;cursor:not-allowed;}
 
+    /* EXAMPLE CASES */
+    .example-bar{padding:8px 20px;border-bottom:1px solid #1a1e28;background:var(--bg);display:flex;align-items:center;gap:8px;overflow-x:auto;flex-shrink:0;}
+    .example-label{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--text5);white-space:nowrap;letter-spacing:.08em;}
+    .ex-btn{font-family:'IBM Plex Mono',monospace;font-size:9px;padding:4px 10px;border:1px solid var(--border2);border-radius:3px;cursor:pointer;color:var(--text4);background:transparent;transition:all .15s;white-space:nowrap;}
+    .ex-btn:hover{border-color:var(--gold2);color:var(--gold);background:#14100a;}
+
     /* OUTPUT */
     .output-zone{flex:1;overflow-y:auto;padding:20px;}
 
     /* EMPTY */
-    .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;}
-    .empty-icon{width:60px;height:60px;border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:16px;opacity:.35;}
+    .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:50px 20px;text-align:center;}
+    .empty-icon{width:56px;height:56px;border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:16px;opacity:.35;}
     .empty-state h3{font-family:'Playfair Display',serif;font-size:17px;color:var(--text5);margin-bottom:6px;}
     .empty-state p{font-size:13px;color:#2a3040;max-width:340px;line-height:1.7;}
 
     /* LOADING */
-    .loading-wrap{display:flex;flex-direction:column;align-items:center;padding:60px 20px;gap:14px;}
+    .loading-wrap{display:flex;flex-direction:column;align-items:center;padding:50px 20px;gap:14px;}
     .loading-bar{width:220px;height:2px;background:#1a1e28;border-radius:1px;overflow:hidden;}
     .loading-fill{height:100%;background:var(--gold2);border-radius:1px;animation:ld 3s ease infinite;}
     @keyframes ld{0%{width:0%}60%{width:78%}85%{width:90%}100%{width:100%}}
@@ -100,14 +108,31 @@
     .report-wrap{animation:fadeUp .3s ease;}
     @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
     .report-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:6px;}
-    .report-id{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--text5);letter-spacing:.1em;}
-    .report-model{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--gold2);}
+    .report-id-txt{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--text5);letter-spacing:.1em;}
+    .report-model-txt{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--gold2);}
     .report-title{font-family:'Playfair Display',serif;font-size:20px;color:var(--gold);margin-bottom:4px;}
-    .report-subtitle{font-size:12px;color:var(--text4);font-style:italic;border-bottom:1px solid var(--border);padding-bottom:16px;margin-bottom:20px;}
-    .report-section{margin-bottom:24px;}
-    .section-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #1a1e28;}
+    .report-subtitle{font-size:12px;color:var(--text4);font-style:italic;border-bottom:1px solid var(--border);padding-bottom:14px;margin-bottom:18px;}
+
+    /* OVERALL CONFIDENCE */
+    .overall-confidence{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:14px 16px;margin-bottom:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+    .oc-label{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--text4);letter-spacing:.1em;text-transform:uppercase;}
+    .oc-score{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;}
+    .oc-bar-wrap{flex:1;min-width:120px;height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+    .oc-bar-fill{height:100%;border-radius:3px;transition:width .6s ease;}
+    .oc-flags{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--red);line-height:1.6;flex:1;min-width:200px;}
+
+    /* REPORT SECTION */
+    .report-section{margin-bottom:22px;}
+    .section-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #1a1e28;}
     .section-num{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--gold2);letter-spacing:.08em;flex-shrink:0;}
-    .section-title{font-family:'Playfair Display',serif;font-size:14px;color:var(--text2);font-weight:600;}
+    .section-title-txt{font-family:'Playfair Display',serif;font-size:14px;color:var(--text2);font-weight:600;flex:1;}
+    .conf-badge{font-family:'IBM Plex Mono',monospace;font-size:8px;padding:2px 7px;border-radius:3px;flex-shrink:0;letter-spacing:.06em;}
+    .conf-low{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border);}
+    .conf-medium{background:var(--yellow-bg);color:var(--yellow);border:1px solid var(--yellow-border);}
+    .conf-high{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);}
+    .conf-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+    .conf-bar-mini{height:3px;border-radius:2px;transition:width .5s ease;}
+    .conf-flag{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--yellow);background:var(--yellow-bg);border:1px solid var(--yellow-border);border-radius:3px;padding:3px 8px;margin-bottom:8px;line-height:1.5;}
     .section-body{font-size:13.5px;color:var(--text3);line-height:1.85;}
     .section-body p{margin-bottom:10px;}
     .finding-item{background:var(--bg2);border-left:2px solid var(--gold2);border-radius:0 4px 4px 0;padding:8px 12px;margin-bottom:6px;font-size:12.5px;color:#8a8f9a;line-height:1.7;}
@@ -115,24 +140,58 @@
     .disclaimer-box p{font-family:'IBM Plex Mono',monospace;font-size:9px;color:#4a3a50;line-height:1.7;}
     .disclaimer-box strong{color:var(--purple);display:block;margin-bottom:4px;font-size:9px;letter-spacing:.1em;}
 
-    /* SHA-256 CERTIFICATE */
-    .cert-block{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:18px;margin-top:20px;}
-    .cert-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+    /* FORENSIC TIMELINE */
+    .timeline-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:20px;}
+    .timeline-title{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--gold2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;}
+    .timeline{position:relative;padding-left:20px;}
+    .timeline::before{content:'';position:absolute;left:6px;top:0;bottom:0;width:1px;background:var(--border2);}
+    .tl-item{position:relative;margin-bottom:14px;padding-left:16px;}
+    .tl-dot{position:absolute;left:-14px;top:3px;width:10px;height:10px;border-radius:50%;border:1.5px solid var(--gold2);background:var(--bg2);}
+    .tl-dot.tl-critical{border-color:var(--red);background:var(--red-bg);}
+    .tl-dot.tl-medical{border-color:var(--green);background:var(--green-bg);}
+    .tl-dot.tl-legal{border-color:var(--blue);background:var(--blue-bg);}
+    .tl-time{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--text5);margin-bottom:2px;}
+    .tl-event{font-size:12px;color:var(--text2);line-height:1.5;}
+    .tl-tag{font-family:'IBM Plex Mono',monospace;font-size:8px;padding:1px 6px;border-radius:2px;margin-left:6px;}
+    .tl-tag-medical{background:var(--green-bg);color:var(--green);}
+    .tl-tag-legal{background:var(--blue-bg);color:var(--blue);}
+    .tl-tag-critical{background:var(--red-bg);color:var(--red);}
+    .tl-legend{display:flex;gap:12px;margin-top:12px;padding-top:10px;border-top:1px solid var(--border);flex-wrap:wrap;}
+    .tl-legend-item{display:flex;align-items:center;gap:5px;font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--text4);}
+    .tl-legend-dot{width:8px;height:8px;border-radius:50%;border:1.5px solid;}
+
+    /* SHA-256 CERT */
+    .cert-block{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:16px;margin-top:20px;}
+    .cert-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border);}
     .cert-title{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gold2);letter-spacing:.1em;text-transform:uppercase;}
     .cert-verified{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--green);background:var(--green-bg);border:1px solid var(--green-border);padding:3px 8px;border-radius:3px;}
-    .cert-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;}
+    .cert-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:7px;}
     .cert-label{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--text4);width:110px;flex-shrink:0;padding-top:2px;}
     .cert-value{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--text2);word-break:break-all;line-height:1.6;}
     .cert-value.hash{color:var(--gold2);}
-    .cert-legal{font-family:'IBM Plex Mono',monospace;font-size:8px;color:#3a3a50;line-height:1.7;margin-top:12px;padding-top:10px;border-top:1px solid #1a1e28;}
+    .cert-legal{font-family:'IBM Plex Mono',monospace;font-size:8px;color:#3a3a50;line-height:1.7;margin-top:10px;padding-top:10px;border-top:1px solid #1a1e28;}
 
     /* ACTIONS */
-    .report-actions{display:flex;gap:8px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);flex-wrap:wrap;}
-    .action-btn{font-family:'IBM Plex Mono',monospace;font-size:10px;padding:8px 16px;border:1px solid var(--border2);border-radius:3px;cursor:pointer;color:var(--text4);background:transparent;transition:all .15s;letter-spacing:.06em;}
+    .report-actions{display:flex;gap:8px;margin-top:18px;padding-top:14px;border-top:1px solid var(--border);flex-wrap:wrap;}
+    .action-btn{font-family:'IBM Plex Mono',monospace;font-size:10px;padding:8px 14px;border:1px solid var(--border2);border-radius:3px;cursor:pointer;color:var(--text4);background:transparent;transition:all .15s;letter-spacing:.06em;}
     .action-btn:hover{border-color:var(--gold2);color:var(--gold);}
     .action-btn.primary{background:var(--gold2);border-color:var(--gold2);color:#0a0800;font-weight:600;}
     .action-btn.primary:hover{background:var(--gold3);}
+    .action-btn.hindi-btn{border-color:var(--blue-border);color:var(--blue);}
+    .action-btn.hindi-btn:hover{background:var(--blue-bg);}
     .action-btn:disabled{opacity:.4;cursor:not-allowed;}
+
+    /* HINDI SUMMARY */
+    .hindi-block{background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:6px;padding:16px;margin-top:16px;animation:fadeUp .3s ease;}
+    .hindi-title{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--blue);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;}
+    .hindi-body{font-size:15px;color:var(--text2);line-height:2;font-family:'Source Serif 4',serif;}
+
+    /* HISTORY */
+    .history-item{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:10px 14px;margin-bottom:8px;cursor:pointer;transition:border-color .15s;}
+    .history-item:hover{border-color:var(--gold2);}
+    .history-item-id{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--gold2);}
+    .history-item-preview{font-size:12px;color:var(--text4);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .history-item-ts{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--text5);margin-top:4px;}
 
     /* ERROR */
     .error-box{background:var(--red-bg);border:1px solid var(--red-border);border-radius:4px;padding:14px 16px;}
@@ -149,7 +208,7 @@
     .about-card h3{font-family:'Playfair Display',serif;font-size:16px;color:var(--gold);margin-bottom:10px;}
     .about-card p{font-size:13px;color:var(--text3);line-height:1.8;margin-bottom:8px;}
     .about-card p:last-child{margin-bottom:0;}
-    .module-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-top:12px;}
+    .module-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:10px;margin-top:12px;}
     .module-card{background:var(--bg);border:1px solid var(--border2);border-radius:4px;padding:12px;}
     .module-card strong{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gold2);display:block;margin-bottom:4px;letter-spacing:.06em;}
     .module-card span{font-size:12px;color:var(--text4);line-height:1.6;}
@@ -157,42 +216,31 @@
 
     /* MOBILE */
     @media(max-width:768px){
-      .brand-sub{display:none;}
-      .brand-title{font-size:18px;}
+      .brand-sub{display:none;}.brand-title{font-size:18px;}
       .mobile-menu-btn{display:block;}
       .sidebar{position:fixed;left:0;top:68px;bottom:0;z-index:60;transform:translateX(-100%);width:260px;}
       .sidebar.open{transform:translateX(0);}
       .sidebar-overlay{display:block;}
-      .input-zone{padding:14px;}
-      .output-zone{padding:14px;}
-      .case-textarea{min-height:110px;font-size:13px;}
+      .input-zone,.output-zone{padding:14px;}
+      .case-textarea{min-height:100px;font-size:13px;}
       .controls-row{flex-direction:column;align-items:stretch;}
       .analyze-btn{width:100%;text-align:center;padding:12px;}
       .report-title{font-size:16px;}
-      .tabs{padding:0 10px;}
-      .tab{padding:10px 10px;font-size:9px;}
-      .cert-row{flex-direction:column;gap:2px;}
+      .tabs{padding:0 10px;}.tab{padding:10px;font-size:9px;}
+      .cert-row,.overall-confidence{flex-direction:column;gap:4px;}
       .cert-label{width:auto;}
+      .example-bar{padding:8px 14px;}
     }
 
     ::-webkit-scrollbar{width:4px;}
     ::-webkit-scrollbar-track{background:var(--bg);}
     ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
-
-    @media print{
-      .hdr,.sidebar,.tabs,.input-zone,.report-actions,.mobile-menu-btn{display:none!important;}
-      .app-body{display:block;height:auto;}
-      .main{overflow:visible;}
-      .output-zone{overflow:visible;padding:0;}
-      body{background:white;color:black;}
-    }
   </style>
 </head>
 <body>
 
 <header class="hdr">
   <div class="logo">
-    <!-- Chiron seal — centaur motif abstracted as a C with medical cross -->
     <div class="seal">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
         <circle cx="12" cy="12" r="10" stroke="#8b6914" stroke-width="1.2"/>
@@ -206,14 +254,9 @@
     </div>
   </div>
   <div class="hdr-right">
-    <div class="status-badge">
-      <div class="status-dot"></div>
-      <span>SYSTEM ACTIVE</span>
-    </div>
+    <div class="status-badge"><div class="status-dot"></div><span>SYSTEM ACTIVE</span></div>
     <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Menu">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
     </button>
   </div>
 </header>
@@ -225,24 +268,19 @@
     <div class="sb-sec">
       <div class="sb-lbl">Analysis Domain</div>
       <button class="mbtn active" onclick="selMod(this,'medico-legal')">
-        <svg class="mico" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M5 8h6M8 5v6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-        Medico-Legal
+        <svg class="mico" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M5 8h6M8 5v6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Medico-Legal
       </button>
       <button class="mbtn" onclick="selMod(this,'malpractice')">
-        <svg class="mico" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M8 5v4l2 2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-        Malpractice
+        <svg class="mico" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M8 5v4l2 2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Malpractice
       </button>
       <button class="mbtn" onclick="selMod(this,'regulations')">
-        <svg class="mico" viewBox="0 0 16 16" fill="none"><path d="M3 1h7l4 4v10H3V1z" stroke="currentColor" stroke-width="1.2"/><path d="M10 1v4h4" stroke="currentColor" stroke-width="1.2"/><path d="M5 9h6M5 12h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-        Regulations & Ethics
+        <svg class="mico" viewBox="0 0 16 16" fill="none"><path d="M3 1h7l4 4v10H3V1z" stroke="currentColor" stroke-width="1.2"/><path d="M10 1v4h4" stroke="currentColor" stroke-width="1.2"/><path d="M5 9h6M5 12h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Regulations & Ethics
       </button>
       <button class="mbtn" onclick="selMod(this,'expert')">
-        <svg class="mico" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="3" stroke="currentColor" stroke-width="1.2"/><path d="M2 15c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-        Expert Witness
+        <svg class="mico" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="5" r="3" stroke="currentColor" stroke-width="1.2"/><path d="M2 15c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Expert Witness
       </button>
       <button class="mbtn" onclick="selMod(this,'full')">
-        <svg class="mico" viewBox="0 0 16 16" fill="none"><path d="M1 8h3l3-6 4 12 3-5h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Full Report
+        <svg class="mico" viewBox="0 0 16 16" fill="none"><path d="M1 8h3l3-6 4 12 3-5h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Full Report
       </button>
     </div>
     <div class="sb-sec">
@@ -254,16 +292,12 @@
     <div class="sb-sec">
       <div class="sb-lbl">Statutes Bank</div>
       <div style="padding:2px 0">
-        <span class="stag">BNS 2023</span><span class="stag">BNSS 2023</span>
-        <span class="stag">BSA 2023</span><span class="stag">MTP Act</span>
-        <span class="stag">NMC Act</span><span class="stag">POCSO</span>
-        <span class="stag">CPA 2019</span><span class="stag">DPDP 2023</span>
-        <span class="stag">MHA 2017</span><span class="stag">DPA 1961</span>
+        <span class="stag">BNS 2023</span><span class="stag">BNSS 2023</span><span class="stag">BSA 2023</span>
+        <span class="stag">MTP Act</span><span class="stag">NMC Act</span><span class="stag">POCSO</span>
+        <span class="stag">CPA 2019</span><span class="stag">DPDP 2023</span><span class="stag">MHA 2017</span>
       </div>
     </div>
-    <div class="disc">
-      <p><strong>ADVISORY</strong>Educational use only. Not licensed legal or medical advice. Consult qualified professionals.</p>
-    </div>
+    <div class="disc"><p><strong>ADVISORY</strong>Educational use only. Not licensed legal or medical advice.</p></div>
     <div class="powered-by">Powered by <span>Grok 4</span> · xAI</div>
   </aside>
 
@@ -271,15 +305,29 @@
     <nav class="tabs">
       <button class="tab active" onclick="swTab(this,'t-input')">Case Input</button>
       <button class="tab" onclick="swTab(this,'t-report')">Report</button>
+      <button class="tab" onclick="swTab(this,'t-history')">History</button>
       <button class="tab" onclick="swTab(this,'t-precedents')">Precedents</button>
-      <button class="tab" onclick="swTab(this,'t-about')">About Chiron</button>
+      <button class="tab" onclick="swTab(this,'t-about')">About</button>
     </nav>
 
     <!-- CASE INPUT TAB -->
     <div id="t-input" style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
+      <!-- Example Cases Bar -->
+      <div class="example-bar">
+        <span class="example-label">LOAD EXAMPLE →</span>
+        <button class="ex-btn" onclick="loadExample('custodial')">Custodial Death</button>
+        <button class="ex-btn" onclick="loadExample('dowry')">Dowry Death</button>
+        <button class="ex-btn" onclick="loadExample('malpractice')">Surgical Negligence</button>
+        <button class="ex-btn" onclick="loadExample('consent')">Consent Violation</button>
+        <button class="ex-btn" onclick="loadExample('pocso')">POCSO-MTP</button>
+        <button class="ex-btn" onclick="loadExample('poisoning')">Suspected Poisoning</button>
+        <button class="ex-btn" onclick="loadExample('neonatal')">Neonatal Death</button>
+        <button class="ex-btn" onclick="loadExample('road')">Road Accident</button>
+      </div>
+
       <div class="input-zone">
         <div class="input-label">Case Facts &amp; Medical Information</div>
-        <textarea class="case-textarea" id="caseInput" placeholder="Enter the case description — facts, medical findings, alleged injuries, circumstances of death or injury, professional conduct concerns, forensic or autopsy report details. The more detail, the more precise Chiron's analysis..."></textarea>
+        <textarea class="case-textarea" id="caseInput" placeholder="Enter case facts, or load an example above. Include medical findings, alleged injuries, forensic details, professional conduct concerns..."></textarea>
         <div class="controls-row">
           <div class="pills">
             <button class="pill sel" onclick="togPill(this)">Injury Classification</button>
@@ -291,6 +339,7 @@
           <button class="analyze-btn" id="analyzeBtn" onclick="runAnalysis()">Analyse Case →</button>
         </div>
       </div>
+
       <div class="output-zone" id="outputZone">
         <div class="empty-state" id="emptyState">
           <div class="empty-icon">
@@ -301,7 +350,7 @@
             </svg>
           </div>
           <h3>Awaiting Case Submission</h3>
-          <p>Enter the case facts above and press Analyse. Chiron will generate a structured medico-legal report anchored to Indian law, sealed with a SHA-256 certificate.</p>
+          <p>Load an example above or enter facts and press Analyse. Chiron generates a SHA-256 certified medico-legal report with per-section confidence scoring.</p>
         </div>
         <div id="reportOut" style="display:none;"></div>
       </div>
@@ -314,25 +363,30 @@
       </div>
     </div>
 
+    <!-- HISTORY TAB -->
+    <div id="t-history" style="display:none;flex:1;overflow:hidden;">
+      <div class="output-zone" id="historyZone">
+        <div class="empty-state"><h3>No History Yet</h3><p>Previous analyses this session will appear here.</p></div>
+      </div>
+    </div>
+
     <!-- PRECEDENTS TAB -->
     <div id="t-precedents" style="display:none;flex:1;overflow:hidden;">
       <div class="output-zone">
         <div class="prec-section-title">Medical Negligence & Malpractice</div>
-        <div class="prec-item"><strong>Jacob Mathew v. State of Punjab (2005) 6 SCC 1</strong>Three-element test for criminal medical negligence. Bolam standard applies. Gross negligence threshold for BNS/IPC s.304A prosecution. Doctors protected from frivolous criminal proceedings.</div>
-        <div class="prec-item"><strong>Kusum Sharma v. Batra Hospital (2010) 3 SCC 480</strong>Six-principle test for negligence. Expert medical evidence mandatory before prosecution. NCDRC jurisdiction affirmed.</div>
-        <div class="prec-item"><strong>Malay Kumar Ganguly v. Sukumar Mukherjee (2009) 9 SCC 221</strong>Civil and criminal liability can coexist. Hospital and doctor jointly liable. Punitive damages permissible for gross negligence.</div>
-        <div class="prec-item"><strong>Bolam v. Friern Hospital Management Committee [1957] 1 WLR 582</strong>Standard adopted by Indian courts. Not negligent if conduct accords with a responsible body of medical opinion.</div>
+        <div class="prec-item"><strong>Jacob Mathew v. State of Punjab (2005) 6 SCC 1</strong>Three-element test for criminal medical negligence. Bolam standard. Gross negligence threshold for BNS s.304A prosecution. Protection from frivolous proceedings.</div>
+        <div class="prec-item"><strong>Kusum Sharma v. Batra Hospital (2010) 3 SCC 480</strong>Six-principle negligence test. Expert evidence mandatory before prosecution. NCDRC jurisdiction affirmed.</div>
+        <div class="prec-item"><strong>Malay Kumar Ganguly v. Sukumar Mukherjee (2009) 9 SCC 221</strong>Civil and criminal liability can coexist. Joint liability of hospital and doctor. Punitive damages permissible.</div>
         <div class="prec-section-title">Informed Consent</div>
-        <div class="prec-item"><strong>Samira Kohli v. Dr. Prabha Manchanda (2008) 2 SCC 1</strong>Informed consent doctrine in India. Consent must be specific to procedure performed. Extending procedure beyond consent constitutes battery.</div>
-        <div class="prec-item"><strong>Pt. Parmanand Katara v. Union of India (1989) 4 SCC 286</strong>Right to emergency medical treatment. Duty to preserve life is paramount. Refusal violates Article 21.</div>
+        <div class="prec-item"><strong>Samira Kohli v. Dr. Prabha Manchanda (2008) 2 SCC 1</strong>Informed consent doctrine. Consent must be specific to procedure. Extending beyond consent = battery.</div>
+        <div class="prec-item"><strong>Pt. Parmanand Katara v. Union of India (1989) 4 SCC 286</strong>Right to emergency treatment. Duty to preserve life paramount. Refusal violates Article 21.</div>
         <div class="prec-section-title">Consumer Protection</div>
-        <div class="prec-item"><strong>IMA v. V.P. Shanta (1995) 6 SCC 651</strong>Medical profession within Consumer Protection Act. Patient as consumer. Free services excluded.</div>
-        <div class="prec-item"><strong>Spring Meadows Hospital v. Harjol Ahluwalia (1998) 4 SCC 39</strong>CPA extended to medical services. Hospital liable for negligence of staff.</div>
+        <div class="prec-item"><strong>IMA v. V.P. Shanta (1995) 6 SCC 651</strong>Medical profession within CPA. Patient as consumer. Free services excluded.</div>
         <div class="prec-section-title">Custodial Death & Article 21</div>
-        <div class="prec-item"><strong>D.K. Basu v. State of West Bengal (1997) 1 SCC 416</strong>Mandatory detention guidelines. Medical examination on arrest and release. Custodial death attracts strict Article 21 scrutiny.</div>
-        <div class="prec-item"><strong>Nilabati Behera v. State of Orissa (1993) 2 SCC 746</strong>State vicariously liable for custodial death. Compensation under Art.32/226 is a public law remedy.</div>
-        <div class="prec-section-title">Circumstantial Evidence & Criminal Standards</div>
-        <div class="prec-item"><strong>Sharad Birdhichand Sarda v. State of Maharashtra (1984) 4 SCC 116</strong>Five conditions for conviction on circumstantial evidence — all circumstances must be established, consistent only with guilt, conclusively exclude innocence. The definitive standard for Indian criminal trials on circumstantial chains.</div>
+        <div class="prec-item"><strong>D.K. Basu v. State of West Bengal (1997) 1 SCC 416</strong>Mandatory detention guidelines. Medical examination on arrest. Article 21 strict scrutiny.</div>
+        <div class="prec-item"><strong>Nilabati Behera v. State of Orissa (1993) 2 SCC 746</strong>State vicariously liable for custodial death. Art.32/226 public law remedy.</div>
+        <div class="prec-section-title">Circumstantial Evidence</div>
+        <div class="prec-item"><strong>Sharad Birdhichand Sarda v. State of Maharashtra (1984) 4 SCC 116</strong>Five conditions for conviction on circumstantial evidence — all links must form a complete chain consistent only with guilt.</div>
       </div>
     </div>
 
@@ -341,31 +395,30 @@
       <div class="output-zone">
         <div class="about-card">
           <h3>The Name</h3>
-          <div class="myth-quote">"Chiron was the wisest and most just of the centaurs — supreme in the knowledge of medicine, and teacher of heroes. He taught Asclepius the art of healing, Achilles justice, and Jason leadership."</div>
-          <p>The name is deliberate. In Greek mythology, Chiron stood at the precise intersection of medical knowledge and justice — which is exactly where this system operates. A guide through the most technically demanding territory in Indian law.</p>
-        </div>
-        <div class="about-card">
-          <h3>What is Chiron?</h3>
-          <p>Chiron is a Medical Jurisprudence Intelligence System built exclusively for Indian law. It takes case facts and generates structured, court-presentable medico-legal analysis powered by Grok 4 — the state-of-the-art reasoning model from xAI.</p>
-          <p>Every report is cryptographically sealed with a SHA-256 hash certificate, making it suitable as a verifiable electronic record under the Bharatiya Sakshya Adhiniyam 2023.</p>
+          <div class="myth-quote">"Chiron was the wisest and most just of the centaurs — supreme in the knowledge of medicine, and teacher of heroes."</div>
+          <p>In Greek mythology, Chiron stood at the precise intersection of medical knowledge and justice. He taught Asclepius healing, Achilles justice, and Jason leadership. This system operates at the same intersection — applying medical science to Indian legal questions.</p>
         </div>
         <div class="about-card">
           <h3>Analysis Modules</h3>
           <div class="module-grid">
-            <div class="module-card"><strong>MEDICO-LEGAL</strong><span>Injury classification, cause vs manner of death, forensic pathology, time of death</span></div>
-            <div class="module-card"><strong>MALPRACTICE</strong><span>Bolam test, standard of care, duty of care, res ipsa loquitur, causation</span></div>
+            <div class="module-card"><strong>MEDICO-LEGAL</strong><span>Injury classification, cause vs manner of death, forensic pathology</span></div>
+            <div class="module-card"><strong>MALPRACTICE</strong><span>Bolam test, standard of care, res ipsa loquitur, causation</span></div>
             <div class="module-card"><strong>REGULATIONS</strong><span>NMC Act, MTP Act, POCSO, informed consent, professional misconduct</span></div>
-            <div class="module-card"><strong>EXPERT WITNESS</strong><span>Court-ready testimony for Sessions Court or High Court</span></div>
-            <div class="module-card"><strong>FULL REPORT</strong><span>All domains — comprehensive 8-section medico-legal analysis</span></div>
+            <div class="module-card"><strong>EXPERT WITNESS</strong><span>Court-ready testimony for Sessions Court / High Court</span></div>
+            <div class="module-card"><strong>FULL REPORT</strong><span>All domains — 8-section comprehensive analysis</span></div>
           </div>
         </div>
         <div class="about-card">
-          <h3>Document Integrity</h3>
-          <p>Every Chiron report receives a SHA-256 cryptographic hash at generation. Any alteration produces a different hash — proving tampering. Legal basis: BSA 2023 §61-65, IT Act 2000 §85B. Verify any report at <strong style="color:#8b6914">/verify.html</strong></p>
+          <h3>v2 Features</h3>
+          <p><strong style="color:var(--gold2)">Per-Section Confidence Scoring</strong> — Every report section is independently scored 1-10 by a second Grok 4 call that audits for hallucination risk and flags areas where conclusions exceed the available evidence.</p>
+          <p><strong style="color:var(--gold2)">Example Case Library</strong> — 8 pre-loaded synthetic Indian medico-legal cases for instant demonstration.</p>
+          <p><strong style="color:var(--gold2)">Session History</strong> — Last 10 analyses saved this session with full reload capability.</p>
+          <p><strong style="color:var(--gold2)">Hindi Summary Toggle</strong> — Key opinion and next steps translated into plain Devanagari Hindi for client/litigant communication.</p>
+          <p><strong style="color:var(--gold2)">Forensic Timeline</strong> — Visual event mapper extracted automatically from case facts.</p>
         </div>
         <div class="about-card">
           <h3>Disclaimer</h3>
-          <p>Chiron is strictly an educational and research tool. Output does not constitute licensed legal advice, medical advice, or a substitute for a qualified advocate or registered medical practitioner. Always consult qualified professionals before taking any legal or medical action.</p>
+          <p>Chiron is strictly an educational and research tool. Output does not constitute licensed legal advice, medical advice, or a substitute for a qualified advocate or registered medical practitioner.</p>
         </div>
       </div>
     </div>
@@ -373,256 +426,576 @@
 </div>
 
 <script>
-  let activeMod = 'medico-legal';
-  let activeFmt = 'study';
-  let lastReport = '';
-  let lastCertificate = null;
-  let isDownloadingPdf = false;
+// ── STATE ──
+let activeMod = 'medico-legal';
+let activeFmt = 'study';
+let lastReport = '';
+let lastCertificate = null;
+let lastConfidence = null;
+let isDownloadingPdf = false;
+let sessionHistory = []; // in-memory session history
 
-  const loadSteps = ['Parsing case facts...','Applying BNS 2023...','Cross-referencing precedents...','Generating expert opinion...','Computing SHA-256...'];
-  let stepInterval = null;
+const loadSteps = ['Parsing case facts...','Applying BNS 2023...','Cross-referencing precedents...','Generating expert opinion...','Auditing confidence...','Computing SHA-256...'];
+let stepInterval = null;
 
-  function toggleSidebar() {
-    document.getElementById('sidebar').classList.toggle('open');
-    document.getElementById('sidebarOverlay').classList.toggle('open');
+// ── EXAMPLE CASES ──
+const EXAMPLES = {
+  custodial: {
+    title: 'Custodial Death — Meerut',
+    text: `Facts: Ramesh Kumar Yadav, aged 34, daily wage labourer, was taken into preventive detention by police at 9:40 PM on 14 March 2024 in connection with a neighbourhood dispute. He was found unconscious in his cell at 6:15 AM the following morning and declared dead on arrival at district hospital at 7:02 AM.
+
+Post-mortem findings: Multiple contusions and abrasions across lower back, bilateral upper arms, and inner thighs. 4 cm laceration on right parietal scalp. Left 3rd and 4th ribs fractured. Haemoperitoneum on PM examination. Conjunctival petechiae bilaterally. Hyoid bone intact. Partial rigor mortis. Fixed posterior lividity.
+
+Police claim: Deceased was in good health at admission. Found unresponsive during morning rounds. May have fallen from bunk.
+
+Family allegation: Deceased was beaten by constables Ramesh Singh and Devendra Tomar during interrogation before formal jail admission. Wife states no pre-existing injuries when he left home. A 2-hour gap exists between reported detention and jail admission. No CCTV available. No magistrate informed within 24 hours. No medical examination conducted at jail admission.`
+  },
+  dowry: {
+    title: 'Dowry Death — Patna',
+    text: `Facts: Anita Kumari, 26 years old, found dead in matrimonial home in Patna on 8 November 2023, approximately 18 months after marriage. Body found hanging from ceiling hook with dupatta. Husband Rajesh Prasad and mother-in-law present in house.
+
+Section 174 BNSS inquest conducted. Post-mortem at Patna Medical College noted: Ligature mark around neck in inverted V-pattern, direction upward and backward, mark incomplete and not encircling neck fully, furrow depth approximately 1.5 cm, cyanosis of lips, petechial haemorrhages in conjunctiva. Wrists found bound with nylon cord before police arrival per neighbour's account. No defence wounds. Hyoid bone fractured.
+
+Dowry history: Family filed statement that in-laws demanded Maruti Swift car and Rs. 3 lakh additional dowry. Anita telephoned mother 6 days before death stating she had been beaten and threatened. WhatsApp message sent night of death: "Mujhe dar lag raha hai, yahan sab mujhe maar denge." (I am afraid, they will all kill me here.)
+
+Accused version: Anita was depressed and had threatened suicide before. Denies wrist binding and dowry demands.
+
+Medical examiner's note: Fractured hyoid more consistent with manual strangulation than hanging. Inverted V incomplete ligature atypical for suicidal hanging. Time since death estimated 8-12 hours before discovery.`
+  },
+  malpractice: {
+    title: 'Surgical Negligence — Bengaluru',
+    text: `Facts: Mrs. Priya Sharma, 38 years, software professional from Bengaluru, underwent elective laparoscopic cholecystectomy at Sunrise Super Specialty Hospital on 22 July 2023. Operating surgeon Dr. Anil Verma (MS Surgery, 12 years experience). Procedure listed as routine. Patient discharged post-operative day 2 in stable condition.
+
+Complication: On post-operative day 5, patient re-admitted with severe abdominal pain, fever 103°F, and jaundice. CT abdomen revealed complete transection of common bile duct with biloma. Emergency hepaticojejunostomy reconstruction performed at different facility. Hospitalised 47 days. Permanent mild hepatic dysfunction resulted.
+
+Record examination: Operative notes contain no mention of intraoperative complication or bile duct injury. Discharge summary describes "uneventful procedure." Nurse post-operative note from day 1 mentions "unusual bile-coloured drain output" not escalated. No intraoperative cholangiogram performed. Consent form is single paragraph generic surgical consent with no specific mention of bile duct injury risk.
+
+Independent expert opinion: Failure to perform intraoperative cholangiography in patient with history of acute cholecystitis, failure to recognise and disclose bile duct injury, and failure to act on abnormal drain output collectively fall below accepted standard of care.
+
+Hospital defence: CBD injuries are known complication in 0.3-0.6% of laparoscopic cholecystectomies. Dr. Verma followed standard technique. Patient filed complaint before Karnataka SCDRC and NMC.`
+  },
+  consent: {
+    title: 'Consent Violation — Ludhiana',
+    text: `Facts: Harjinder Singh, 52 years old, from Ludhiana, Punjab, admitted to City Cardiac Centre for angioplasty of left anterior descending artery following myocardial infarction. Signed consent form in Punjabi authorising cardiologist Dr. Manpreet Bhatia to "perform necessary cardiac procedures."
+
+Procedure: During angioplasty, Dr. Bhatia discovered significant blockages in two additional vessels (right coronary artery and circumflex artery). Without waking the patient or contacting family waiting outside, Dr. Bhatia extended procedure to perform triple vessel angioplasty with stent placement in all three vessels. Procedure lasted 3.5 hours instead of planned 45 minutes.
+
+Post-procedure: Patient suffered peri-procedural stroke during extended intervention. Residual left-sided weakness resulted. Family alleges they were not informed of any change in procedure and were told only after completion.
+
+Hospital position: Extension was medically necessary. Interrupting and restarting on different date would impose additional anaesthetic risk. Consent form authorised "necessary cardiac procedures." Decision was in patient's best interest.
+
+Additional context: Medical record shows no documentation of why family was not consulted during possible pause between vessel interventions. No separate consent for extended procedure exists. Dr. Bhatia's NMC registration lists Maharashtra as primary practice state, not Punjab.`
+  },
+  pocso: {
+    title: 'POCSO-MTP — Jaipur',
+    text: `Facts: A 15-year-old girl, referred to as X, was brought to Dr. Sunita Arora (MBBS, MD Obstetrics) at a private clinic in Jaipur by her aunt. X presented with amenorrhoea of approximately 14 weeks. Ultrasonography confirmed intrauterine pregnancy of 13 weeks 4 days gestation. X disclosed that pregnancy resulted from repeated sexual assault by her mother's live-in partner over several months.
+
+Consent and procedure: Parents not present. Aunt provided written consent. X signed consent form. Dr. Arora performed medical termination using mifepristone and misoprostol combination followed by vacuum aspiration when medical management was incomplete.
+
+Reporting: Dr. Arora did not report to police or child welfare authorities before or after procedure. She states she was concerned about X's confidentiality and safety — X specifically requested no police report fearing retaliation from assailant living with her family.
+
+Post-procedure: Aunt subsequently informed police. Accused arrested. Defence now argues Dr. Arora's failure to report under POCSO constitutes an offence. Defence also challenges whether termination was lawful given consent was provided by aunt rather than parent or guardian.
+
+Additional issue: Clinic was registered under MTP Act but Dr. Arora's MTP certification had lapsed 8 months prior to procedure.
+
+Questions: (1) Was the termination medically and legally appropriate? (2) What is the legal duty to report under POCSO vs confidentiality obligations? (3) Does lapsed MTP certification render the procedure illegal? (4) Was aunt's consent legally valid?`
+  },
+  poisoning: {
+    title: 'Suspected Poisoning — Delhi',
+    text: `Facts: Suresh Mehta, 45 years old, businessman from Delhi, was found unconscious at his residence on 3 April 2024. He had attended a dinner party with business associates the previous evening. Family members found him unresponsive at 7:00 AM. Ambulance called. Declared dead at AIIMS Emergency at 8:45 AM.
+
+Post-mortem at AIIMS Delhi: Mild cyanosis of lips. No external injuries. Gastric contents had unusual odour noted by examiner. Petechial haemorrhages in conjunctiva. Pulmonary oedema moderate. Liver showed mild congestion. Brain showed mild cerebral oedema.
+
+Cause of death (preliminary): Cardiorespiratory failure. Manner undetermined pending toxicology.
+
+Toxicology (FSL report, 30 days later): Organophosphate compound detected in gastric contents and liver — Chlorpyrifos at 2.3 mcg/g liver concentration. Ethanol: nil. Blood acetylcholinesterase activity significantly reduced.
+
+Family allegations: Business dispute with partner Rajeev Anand over a Rs. 2 crore property deal. Deceased had recently sent a legal notice to Anand. The dinner party was attended by Anand. No suicide history. Family demands investigation.
+
+Anand's version: Deceased consumed the food voluntarily. No possibility of his involvement. Deceased had history of handling pesticides at a farmhouse he owned.
+
+Medical questions: Is chlorpyrifos at this concentration consistent with lethal poisoning? Could exposure have occurred accidentally through farm work? What is the typical clinical picture of organophosphate poisoning and does it match the PM findings?`
+  },
+  neonatal: {
+    title: 'Neonatal Death — Mumbai',
+    text: `Facts: A full-term neonate (38 weeks gestation) was born at Shree Hospital, Mumbai on 12 January 2024 by normal vaginal delivery to mother Fatima Ansari, 27 years old, primigravida. APGAR score at 1 minute recorded as 6. At 5 minutes recorded as 8. Baby was kept under observation in nursery.
+
+Events: At 4 hours post-delivery, nursing staff noted baby was grunting and had subcostal retractions. Duty nurse contacted resident Dr. Preeti Shah. No immediate examination documented. At 6 hours, baby found unresponsive. Emergency resuscitation attempted. Baby declared dead at 7 hours post-delivery.
+
+Post-mortem: Conducted at JJ Hospital. Findings: Bilateral patchy pulmonary atelectasis. Hyaline membrane formation on histopathology. Intraventricular haemorrhage Grade II. No congenital anomalies.
+
+Parents' allegation: Early signs of respiratory distress were ignored by nursing staff. Timely intervention with CPAP or surfactant therapy could have saved the baby. No senior paediatric consultation was called despite APGAR of 6 at 1 minute. No monitoring records exist for the period between 1 hour and 4 hours.
+
+Hospital defence: APGAR at 5 minutes was 8 which is normal. Respiratory distress syndrome in term infants is rare and initial presentation was mild. Hospital followed standard observation protocol. Neonatal death can occur despite best care.
+
+Question: Was this death preventable? Does the failure to document monitoring and the delay in examination constitute medical negligence?`
+  },
+  road: {
+    title: 'Road Accident MLC — Jaipur',
+    text: `Facts: Ram Prasad Sharma, 42 years old, suffered injuries in a road accident on National Highway 48 near Jaipur on 7 February 2024. He was struck by a commercial truck (Tata 407) whose driver allegedly fled the scene. Victim was brought to SMS Hospital Jaipur by passersby.
+
+Medical findings at SMS Hospital: GCS on admission: 12/15. Blood pressure: 100/70 mmHg. Right femur fracture (closed, mid-shaft). Two right-sided rib fractures (5th and 6th ribs). Laceration on right temporal region, 6 cm, sutured. Chest X-ray showed right-sided pneumothorax. CT head: No intracranial bleed. CT chest: Confirmed pneumothorax, lung contusion right lower lobe.
+
+MLC (Medico-Legal Case) registered. Police statement recorded.
+
+Treatment: Intercostal drainage tube placed. Right femur fracture managed with skeletal traction initially, later intramedullary nail fixation on day 5. Patient discharged after 22 days. Residual limitation of knee flexion (60 degrees).
+
+Insurance claim context: Victim's family filed Motor Accident Claims Tribunal (MACT) petition. Insurance company disputes the severity of injuries and claims some injuries may be pre-existing. Victim is a daily wage worker who claims total disability for 8 months and permanent partial disability of right knee.
+
+Questions: How are road accident injuries classified under Indian law for compensation purposes? What constitutes permanent partial disability? How should the court evaluate the disputed causation?`
   }
+};
 
-  function selMod(btn, mod) {
-    btn.closest('.sb-sec').querySelectorAll('.mbtn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active'); activeMod = mod;
-    if (window.innerWidth <= 768) toggleSidebar();
-  }
+// ── FORENSIC TIMELINE EXTRACTOR ──
+function extractTimeline(caseText) {
+  const events = [];
+  const lines = caseText.split(/[.\n]/);
 
-  function selFmt(btn, fmt) {
-    btn.closest('.sb-sec').querySelectorAll('.mbtn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active'); activeFmt = fmt;
-    if (window.innerWidth <= 768) toggleSidebar();
-  }
+  const timePatterns = [
+    { re: /(\d{1,2}:\d{2}\s*(AM|PM|am|pm))/g, type: 'time' },
+    { re: /(\d{1,2}\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4})/gi, type: 'date' },
+    { re: /(day\s+\d+|post.operative\s+day\s+\d+|hour[s]?\s+\d+|\d+\s+hour[s]?\s+post)/gi, type: 'relative' },
+    { re: /(on\s+admission|at\s+discovery|upon\s+arrival|at\s+death|time\s+of\s+death)/gi, type: 'event' }
+  ];
 
-  function togPill(btn) { btn.classList.toggle('sel'); }
+  const medicalKeywords = ['post-mortem', 'autopsy', 'admitted', 'transferred', 'discovered', 'found', 'examined', 'discharged', 'surgery', 'operated', 'toxicology', 'death', 'injury', 'fracture', 'haemorrhage'];
+  const legalKeywords = ['fir', 'complaint', 'arrested', 'inquest', 'magistrate', 'charged', 'section', 'report', 'statement', 'police'];
+  const criticalKeywords = ['died', 'death', 'deceased', 'fatal', 'critical', 'unresponsive', 'unconscious'];
 
-  function swTab(btn, tab) {
-    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    ['t-input','t-report','t-precedents','t-about'].forEach(id => {
-      document.getElementById(id).style.display = id === tab ? 'flex' : 'none';
-    });
-  }
+  lines.forEach(line => {
+    const trimmed = line.trim();
+    if (trimmed.length < 10) return;
 
-  function startLoadingSteps(container) {
-    let i = 0;
-    const items = container.querySelectorAll('.loading-step');
-    stepInterval = setInterval(() => {
-      items.forEach(it => it.classList.remove('active'));
-      if (items[i]) items[i].classList.add('active');
-      i = (i + 1) % items.length;
-    }, 700);
-  }
-
-  function stopLoadingSteps() {
-    if (stepInterval) { clearInterval(stepInterval); stepInterval = null; }
-  }
-
-  async function runAnalysis() {
-    const txt = document.getElementById('caseInput').value.trim();
-    if (txt.length < 20) {
-      const ta = document.getElementById('caseInput');
-      ta.style.borderColor = '#7a2a2a';
-      setTimeout(() => ta.style.borderColor = '', 1600);
-      return;
-    }
-
-    const pills = [...document.querySelectorAll('.pill.sel')].map(p => p.textContent.trim());
-    const btn = document.getElementById('analyzeBtn');
-    const out = document.getElementById('reportOut');
-
-    btn.disabled = true;
-    btn.textContent = 'Analysing...';
-    document.getElementById('emptyState').style.display = 'none';
-    out.style.display = 'block';
-    lastReport = ''; lastCertificate = null;
-
-    out.innerHTML = `
-      <div class="loading-wrap">
-        <div class="loading-bar"><div class="loading-fill"></div></div>
-        <div class="loading-label">CHIRON IS ANALYSING YOUR CASE</div>
-        <div class="loading-steps">
-          ${loadSteps.map(s => `<div class="loading-step">${s}</div>`).join('')}
-        </div>
-      </div>`;
-
-    startLoadingSteps(out);
-
-    try {
-      const response = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ caseText: txt, module: activeMod, format: activeFmt, focusAreas: pills })
-      });
-
-      const data = await response.json();
-      stopLoadingSteps();
-
-      if (!response.ok || !data.success) throw new Error(data.error || `Server error ${response.status}`);
-
-      lastReport = data.report;
-      lastCertificate = data.certificate;
-
-      const html = buildReportHtml(data.report, data.certificate);
-      out.innerHTML = html;
-      document.getElementById('reportTabContent').innerHTML = html;
-
-    } catch (err) {
-      stopLoadingSteps();
-      out.innerHTML = `
-        <div class="error-box">
-          <p><strong>ANALYSIS FAILED</strong>
-          ${err.message}<br><br>
-          If this is an API key error, ensure XAI_API_KEY is set in Vercel environment variables.<br>
-          If credits issue, top up at console.x.ai
-          </p>
-        </div>`;
-    }
-
-    btn.disabled = false;
-    btn.textContent = 'Analyse Case →';
-  }
-
-  function buildReportHtml(text, cert) {
-    const ts = cert ? new Date(cert.timestamp).toLocaleString('en-IN', {
-      day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'
-    }) + ' IST' : '';
-
-    const rawSections = text.split(/\n(?=§\d+\.)/);
-    let sectionsHtml = '';
-
-    rawSections.forEach(sec => {
-      const match = sec.match(/^§(\d+)\.\s*([^\n]+)\n?([\s\S]*)/);
-      if (!match) return;
-      const num = match[1].padStart(2,'0');
-      const title = match[2].trim();
-      const body = match[3].trim();
-      const isDisc = title.toLowerCase().includes('disclaimer');
-      const isStatutes = title.toLowerCase().includes('statute') || title.toLowerCase().includes('precedent');
-      const isIssues = title.toLowerCase().includes('issues');
-      const isSteps = title.toLowerCase().includes('next steps') || title.toLowerCase().includes('suggested');
-
-      let bodyHtml = '';
-      if (isDisc) {
-        bodyHtml = `<div class="disclaimer-box"><p><strong>DISCLAIMER</strong>${body}</p></div>`;
-      } else if (isStatutes || isIssues || isSteps) {
-        body.split('\n').filter(l => l.trim()).forEach(l => {
-          bodyHtml += `<div class="finding-item">${l.trim().replace(/^[-•*]\s*/,'')}</div>`;
-        });
-      } else {
-        bodyHtml = `<div class="section-body">${body.split(/\n\n+/).map(p => `<p>${p.replace(/\n/g,'<br>')}</p>`).join('')}</div>`;
-      }
-
-      sectionsHtml += `
-        <div class="report-section">
-          <div class="section-header">
-            <span class="section-num">§${num}</span>
-            <span class="section-title">${title}</span>
-          </div>
-          ${bodyHtml}
-        </div>`;
+    let timeRef = '';
+    timePatterns.forEach(p => {
+      const match = trimmed.match(p.re);
+      if (match && !timeRef) timeRef = match[0];
     });
 
-    if (!sectionsHtml) sectionsHtml = `<div class="section-body"><p>${text.replace(/\n/g,'<br>')}</p></div>`;
+    if (!timeRef) return;
 
-    let certHtml = '';
-    if (cert) {
-      certHtml = `
-        <div class="cert-block">
-          <div class="cert-header">
-            <span class="cert-title">§ Document Integrity Certificate · SHA-256</span>
-            <span class="cert-verified">✓ HASH SEALED</span>
-          </div>
-          <div class="cert-row"><span class="cert-label">Report ID</span><span class="cert-value">${cert.reportId}</span></div>
-          <div class="cert-row"><span class="cert-label">Timestamp</span><span class="cert-value">${cert.timestamp} · ${ts}</span></div>
-          <div class="cert-row"><span class="cert-label">Algorithm</span><span class="cert-value">SHA-256 (FIPS 180-4)</span></div>
-          <div class="cert-row"><span class="cert-label">Model</span><span class="cert-value">${(cert.model||'grok-4').toUpperCase()} · ${cert.tokens||0} tokens</span></div>
-          <div class="cert-row"><span class="cert-label">Case Hash</span><span class="cert-value hash">${cert.caseHash}</span></div>
-          <div class="cert-row"><span class="cert-label">Document Hash</span><span class="cert-value hash">${cert.reportHash}</span></div>
-          <div class="cert-legal">
-            Legal basis: BSA 2023 §61-65 · IT Act 2000 §85B · UNCITRAL Model Law<br>
-            Verify at: <a href="/verify.html?hash=${cert.reportHash}&id=${cert.reportId}" target="_blank" style="color:#8b6914;">/verify.html</a>
-          </div>
-        </div>`;
+    const lower = trimmed.toLowerCase();
+    let type = 'legal';
+    if (medicalKeywords.some(k => lower.includes(k))) type = 'medical';
+    if (criticalKeywords.some(k => lower.includes(k))) type = 'critical';
+
+    const eventText = trimmed.replace(timeRef, '').trim().substring(0, 100);
+    if (eventText.length > 5) {
+      events.push({ time: timeRef, event: eventText, type });
     }
+  });
 
-    return `
-      <div class="report-wrap">
-        <div class="report-meta">
-          <span class="report-id">${cert?.reportId || 'N/A'} · ${ts}</span>
-          <span class="report-model">${(cert?.model||'GROK-4').toUpperCase()}</span>
-        </div>
-        <div class="report-title">Medico-Legal Analysis Report</div>
-        <div class="report-subtitle">Generated by Chiron · Medical Jurisprudence Intelligence System · Indian Jurisdiction · Educational Use Only</div>
-        ${sectionsHtml}
-        ${certHtml}
-        <div class="report-actions">
-          <button class="action-btn primary" id="pdfBtn" onclick="downloadPdf()">Download PDF →</button>
-          <button class="action-btn" onclick="copyReport()">Copy Text</button>
-          <button class="action-btn" onclick="window.open('/verify.html?hash=${cert?.reportHash||''}&id=${cert?.reportId||''}','_blank')">Verify Hash</button>
-          <button class="action-btn" onclick="newAnalysis()">New Analysis</button>
-        </div>
-      </div>`;
+  return events.slice(0, 8); // Max 8 timeline events
+}
+
+function buildTimeline(caseText) {
+  const events = extractTimeline(caseText);
+  if (events.length < 2) return '';
+
+  const items = events.map(e => `
+    <div class="tl-item">
+      <div class="tl-dot tl-${e.type}"></div>
+      <div class="tl-time">${e.time}</div>
+      <div class="tl-event">${e.event}<span class="tl-tag tl-tag-${e.type}">${e.type.toUpperCase()}</span></div>
+    </div>`).join('');
+
+  return `<div class="timeline-wrap">
+    <div class="timeline-title">§ Forensic Event Timeline</div>
+    <div class="timeline">${items}</div>
+    <div class="tl-legend">
+      <div class="tl-legend-item"><div class="tl-legend-dot" style="border-color:var(--green);background:var(--green-bg)"></div>Medical</div>
+      <div class="tl-legend-item"><div class="tl-legend-dot" style="border-color:var(--blue);background:var(--blue-bg)"></div>Legal</div>
+      <div class="tl-legend-item"><div class="tl-legend-dot" style="border-color:var(--red);background:var(--red-bg)"></div>Critical</div>
+    </div>
+  </div>`;
+}
+
+// ── CONFIDENCE DISPLAY ──
+function getScoreColor(score) {
+  if (score >= 8) return '#3a7d55';
+  if (score >= 6) return '#c8a020';
+  return '#c05050';
+}
+
+function getRiskClass(risk) {
+  if (risk === 'low') return 'conf-low';
+  if (risk === 'medium') return 'conf-medium';
+  return 'conf-high';
+}
+
+function buildConfidenceOverall(confidence) {
+  if (!confidence) return '';
+  const score = confidence.overallScore || 7;
+  const color = getScoreColor(score);
+  const flags = confidence.criticalFlags || [];
+
+  return `<div class="overall-confidence">
+    <div>
+      <div class="oc-label">Overall Confidence</div>
+      <div class="oc-score" style="color:${color}">${score}<span style="font-size:13px;color:var(--text4)">/10</span></div>
+    </div>
+    <div class="oc-bar-wrap"><div class="oc-bar-fill" style="width:${score*10}%;background:${color}"></div></div>
+    ${flags.length > 0 ? `<div class="oc-flags">⚠ ${flags.join(' · ')}</div>` : '<div style="font-family:IBM Plex Mono,monospace;font-size:9px;color:var(--green)">✓ No critical cross-section risks identified</div>'}
+  </div>`;
+}
+
+function getSectionConfidence(confidence, sectionNum) {
+  if (!confidence?.sections) return null;
+  return confidence.sections.find(s => s.num === sectionNum) || null;
+}
+
+// ── EXAMPLE CASE LOADER ──
+function loadExample(key) {
+  const ex = EXAMPLES[key];
+  if (!ex) return;
+  document.getElementById('caseInput').value = ex.text;
+  document.getElementById('caseInput').focus();
+
+  // Auto-select appropriate module
+  const moduleMap = {
+    custodial: 'full', dowry: 'full', malpractice: 'malpractice',
+    consent: 'regulations', pocso: 'regulations', poisoning: 'medico-legal',
+    neonatal: 'malpractice', road: 'medico-legal'
+  };
+  const mod = moduleMap[key] || 'full';
+  const modBtns = document.querySelectorAll('.sidebar .mbtn');
+  modBtns.forEach(b => {
+    if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(`'${mod}'`)) {
+      b.closest('.sb-sec').querySelectorAll('.mbtn').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      activeMod = mod;
+    }
+  });
+}
+
+// ── SIDEBAR ──
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+}
+
+function selMod(btn, mod) {
+  btn.closest('.sb-sec').querySelectorAll('.mbtn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active'); activeMod = mod;
+  if (window.innerWidth <= 768) toggleSidebar();
+}
+
+function selFmt(btn, fmt) {
+  btn.closest('.sb-sec').querySelectorAll('.mbtn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active'); activeFmt = fmt;
+  if (window.innerWidth <= 768) toggleSidebar();
+}
+
+function togPill(btn) { btn.classList.toggle('sel'); }
+
+function swTab(btn, tab) {
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  ['t-input','t-report','t-history','t-precedents','t-about'].forEach(id => {
+    document.getElementById(id).style.display = id === tab ? 'flex' : 'none';
+  });
+}
+
+// ── LOADING ──
+function startLoadingSteps(container) {
+  let i = 0;
+  const items = container.querySelectorAll('.loading-step');
+  stepInterval = setInterval(() => {
+    items.forEach(it => it.classList.remove('active'));
+    if (items[i]) items[i].classList.add('active');
+    i = (i + 1) % items.length;
+  }, 600);
+}
+function stopLoadingSteps() {
+  if (stepInterval) { clearInterval(stepInterval); stepInterval = null; }
+}
+
+// ── MAIN ANALYSIS ──
+async function runAnalysis() {
+  const txt = document.getElementById('caseInput').value.trim();
+  if (txt.length < 20) {
+    const ta = document.getElementById('caseInput');
+    ta.style.borderColor = '#7a2a2a';
+    setTimeout(() => ta.style.borderColor = '', 1600);
+    return;
   }
 
-  async function downloadPdf() {
-    if (!lastReport || !lastCertificate || isDownloadingPdf) return;
-    isDownloadingPdf = true;
-    const btn = document.getElementById('pdfBtn');
-    if (btn) { btn.disabled = true; btn.textContent = 'Generating PDF...'; }
+  const pills = [...document.querySelectorAll('.pill.sel')].map(p => p.textContent.trim());
+  const btn = document.getElementById('analyzeBtn');
+  const out = document.getElementById('reportOut');
 
-    try {
-      const response = await fetch('/api/pdf', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ report: lastReport, certificate: lastCertificate })
-      });
+  btn.disabled = true; btn.textContent = 'Analysing...';
+  document.getElementById('emptyState').style.display = 'none';
+  out.style.display = 'block';
+  lastReport = ''; lastCertificate = null; lastConfidence = null;
 
-      if (!response.ok) {
-        const err = await response.json().catch(() => ({}));
-        throw new Error(err.error || `PDF error ${response.status}`);
-      }
+  out.innerHTML = `<div class="loading-wrap">
+    <div class="loading-bar"><div class="loading-fill"></div></div>
+    <div class="loading-label">CHIRON IS ANALYSING YOUR CASE</div>
+    <div class="loading-steps">${loadSteps.map(s => `<div class="loading-step">${s}</div>`).join('')}</div>
+  </div>`;
 
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `Chiron-Report-${lastCertificate.reportId}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+  startLoadingSteps(out);
 
-    } catch (err) {
-      alert(`PDF generation failed: ${err.message}`);
-    }
-
-    isDownloadingPdf = false;
-    if (btn) { btn.disabled = false; btn.textContent = 'Download PDF →'; }
-  }
-
-  function copyReport() {
-    if (!lastReport) return;
-    const text = lastReport + (lastCertificate ? `\n\n---\nReport ID: ${lastCertificate.reportId}\nSHA-256: ${lastCertificate.reportHash}\nTimestamp: ${lastCertificate.timestamp}` : '');
-    navigator.clipboard.writeText(text).then(() => {
-      document.querySelectorAll('.action-btn').forEach(b => {
-        if (b.textContent === 'Copy Text') { b.textContent = 'Copied ✓'; setTimeout(() => b.textContent = 'Copy Text', 2000); }
-      });
+  try {
+    const response = await fetch('/api/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ caseText: txt, module: activeMod, format: activeFmt, focusAreas: pills })
     });
+
+    const data = await response.json();
+    stopLoadingSteps();
+
+    if (!response.ok || !data.success) throw new Error(data.error || `Server error ${response.status}`);
+
+    lastReport = data.report;
+    lastCertificate = data.certificate;
+    lastConfidence = data.confidence;
+
+    const html = buildReportHtml(data.report, data.certificate, data.confidence, txt);
+    out.innerHTML = html;
+    document.getElementById('reportTabContent').innerHTML = html;
+
+    // Add to session history
+    addToHistory(txt, data.report, data.certificate, data.confidence);
+
+  } catch (err) {
+    stopLoadingSteps();
+    out.innerHTML = `<div class="error-box"><p><strong>ANALYSIS FAILED</strong>${err.message}<br><br>Ensure XAI_API_KEY is set in Vercel environment variables.</p></div>`;
   }
 
-  function newAnalysis() {
-    document.getElementById('caseInput').value = '';
-    document.getElementById('reportOut').style.display = 'none';
-    document.getElementById('emptyState').style.display = 'flex';
-    lastReport = ''; lastCertificate = null;
-    document.querySelectorAll('.tab')[0].click();
+  btn.disabled = false; btn.textContent = 'Analyse Case →';
+}
+
+// ── BUILD REPORT HTML ──
+function buildReportHtml(text, cert, confidence, caseText) {
+  const ts = cert ? new Date(cert.timestamp).toLocaleString('en-IN', {
+    day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'
+  }) + ' IST' : '';
+
+  const rawSections = text.split(/\n(?=§\d+\.)/);
+  let sectionsHtml = '';
+
+  rawSections.forEach(sec => {
+    const match = sec.match(/^§(\d+)\.\s*([^\n]+)\n?([\s\S]*)/);
+    if (!match) return;
+    const num = match[1].padStart(2,'0');
+    const title = match[2].trim();
+    const body = match[3].trim();
+    const isDisc = title.toLowerCase().includes('disclaimer');
+    const isStatutes = title.toLowerCase().includes('statute') || title.toLowerCase().includes('precedent');
+    const isIssues = title.toLowerCase().includes('issues');
+    const isSteps = title.toLowerCase().includes('next steps') || title.toLowerCase().includes('suggested');
+
+    // Get confidence for this section
+    const sConf = getSectionConfidence(confidence, num);
+    const confScore = sConf?.score || null;
+    const confRisk = sConf?.risk || null;
+    const confFlag = sConf?.flag || null;
+
+    let confHtml = '';
+    if (confScore !== null) {
+      const color = getScoreColor(confScore);
+      const riskClass = getRiskClass(confRisk);
+      confHtml = `
+        <div class="conf-bar-row">
+          <div class="oc-bar-wrap" style="max-width:120px"><div class="conf-bar-mini" style="width:${confScore*10}%;background:${color}"></div></div>
+          <span class="conf-badge ${riskClass}">${confScore}/10 · ${(confRisk||'').toUpperCase()}</span>
+        </div>
+        ${confFlag ? `<div class="conf-flag">⚠ ${confFlag}</div>` : ''}`;
+    }
+
+    let bodyHtml = '';
+    if (isDisc) {
+      bodyHtml = `<div class="disclaimer-box"><p><strong>DISCLAIMER</strong>${body}</p></div>`;
+    } else if (isStatutes || isIssues || isSteps) {
+      body.split('\n').filter(l => l.trim()).forEach(l => {
+        bodyHtml += `<div class="finding-item">${l.trim().replace(/^[-•*]\s*/,'')}</div>`;
+      });
+    } else {
+      bodyHtml = `<div class="section-body">${body.split(/\n\n+/).map(p => `<p>${p.replace(/\n/g,'<br>')}</p>`).join('')}</div>`;
+    }
+
+    sectionsHtml += `<div class="report-section">
+      <div class="section-header">
+        <span class="section-num">§${num}</span>
+        <span class="section-title-txt">${title}</span>
+      </div>
+      ${confHtml}
+      ${bodyHtml}
+    </div>`;
+  });
+
+  if (!sectionsHtml) sectionsHtml = `<div class="section-body"><p>${text.replace(/\n/g,'<br>')}</p></div>`;
+
+  // Timeline
+  const timelineHtml = (activeMod === 'full' || activeMod === 'medico-legal') ? buildTimeline(caseText || '') : '';
+
+  // SHA-256 cert
+  let certHtml = '';
+  if (cert) {
+    certHtml = `<div class="cert-block">
+      <div class="cert-header">
+        <span class="cert-title">§ Document Integrity Certificate · SHA-256</span>
+        <span class="cert-verified">✓ HASH SEALED</span>
+      </div>
+      <div class="cert-row"><span class="cert-label">Report ID</span><span class="cert-value">${cert.reportId}</span></div>
+      <div class="cert-row"><span class="cert-label">Timestamp</span><span class="cert-value">${cert.timestamp} · ${ts}</span></div>
+      <div class="cert-row"><span class="cert-label">Algorithm</span><span class="cert-value">SHA-256 (FIPS 180-4)</span></div>
+      <div class="cert-row"><span class="cert-label">Model</span><span class="cert-value">${(cert.model||'grok-4').toUpperCase()} · ${cert.tokens||0} tokens</span></div>
+      <div class="cert-row"><span class="cert-label">Case Hash</span><span class="cert-value hash">${cert.caseHash}</span></div>
+      <div class="cert-row"><span class="cert-label">Document Hash</span><span class="cert-value hash">${cert.reportHash}</span></div>
+      <div class="cert-legal">Legal basis: BSA 2023 §61-65 · IT Act 2000 §85B · UNCITRAL Model Law<br>
+      Verify at: <a href="/verify.html?hash=${cert.reportHash}&id=${cert.reportId}" target="_blank" style="color:#8b6914;">/verify.html</a></div>
+    </div>`;
   }
+
+  return `<div class="report-wrap">
+    <div class="report-meta">
+      <span class="report-id-txt">${cert?.reportId || 'N/A'} · ${ts}</span>
+      <span class="report-model-txt">${(cert?.model||'GROK-4').toUpperCase()}</span>
+    </div>
+    <div class="report-title">Medico-Legal Analysis Report</div>
+    <div class="report-subtitle">Generated by Chiron · Medical Jurisprudence Intelligence · Indian Jurisdiction · Educational Use Only</div>
+    ${buildConfidenceOverall(confidence)}
+    ${timelineHtml}
+    ${sectionsHtml}
+    ${certHtml}
+    <div class="report-actions">
+      <button class="action-btn primary" id="pdfBtn" onclick="downloadPdf()">Download PDF →</button>
+      <button class="action-btn hindi-btn" id="hindiBtn" onclick="generateHindi()">हिंदी सारांश</button>
+      <button class="action-btn" onclick="copyReport()">Copy Text</button>
+      <button class="action-btn" onclick="window.open('/verify.html?hash=${cert?.reportHash||''}&id=${cert?.reportId||''}','_blank')">Verify Hash</button>
+      <button class="action-btn" onclick="newAnalysis()">New Analysis</button>
+    </div>
+    <div id="hindiResult"></div>
+  </div>`;
+}
+
+// ── HINDI SUMMARY ──
+async function generateHindi() {
+  if (!lastReport) return;
+  const btn = document.getElementById('hindiBtn');
+  const resultEl = document.getElementById('hindiResult');
+  if (!btn || !resultEl) return;
+
+  btn.disabled = true; btn.textContent = 'अनुवाद हो रहा है...';
+  resultEl.innerHTML = `<div class="hindi-block"><div class="hindi-title">हिंदी सारांश — अनुवाद हो रहा है...</div></div>`;
+
+  try {
+    const response = await fetch('/api/hindi', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ report: lastReport })
+    });
+    const data = await response.json();
+    if (!response.ok || !data.success) throw new Error(data.error || 'Translation failed');
+    resultEl.innerHTML = `<div class="hindi-block">
+      <div class="hindi-title">हिंदी सारांश — मुवक्किल/वादी के लिए</div>
+      <div class="hindi-body">${data.hindi.replace(/\n/g,'<br>')}</div>
+    </div>`;
+  } catch (err) {
+    resultEl.innerHTML = `<div class="error-box"><p><strong>TRANSLATION FAILED</strong>${err.message}</p></div>`;
+  }
+
+  btn.disabled = false; btn.textContent = 'हिंदी सारांश';
+}
+
+// ── SESSION HISTORY ──
+function addToHistory(caseText, report, cert, confidence) {
+  const entry = {
+    id: cert?.reportId || `LOCAL-${Date.now()}`,
+    ts: new Date().toLocaleString('en-IN', {day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',hour12:true}),
+    preview: caseText.substring(0, 80) + '...',
+    report, cert, confidence,
+    caseText
+  };
+  sessionHistory.unshift(entry);
+  if (sessionHistory.length > 10) sessionHistory.pop();
+  renderHistory();
+}
+
+function renderHistory() {
+  const zone = document.getElementById('historyZone');
+  if (!zone) return;
+  if (sessionHistory.length === 0) {
+    zone.innerHTML = '<div class="empty-state"><h3>No History Yet</h3><p>Previous analyses this session will appear here.</p></div>';
+    return;
+  }
+  zone.innerHTML = sessionHistory.map((entry, i) => `
+    <div class="history-item" onclick="loadFromHistory(${i})">
+      <div class="history-item-id">${entry.id}</div>
+      <div class="history-item-preview">${entry.preview}</div>
+      <div class="history-item-ts">${entry.ts} · Click to reload</div>
+    </div>`).join('');
+}
+
+function loadFromHistory(idx) {
+  const entry = sessionHistory[idx];
+  if (!entry) return;
+  lastReport = entry.report;
+  lastCertificate = entry.cert;
+  lastConfidence = entry.confidence;
+  document.getElementById('caseInput').value = entry.caseText;
+
+  const html = buildReportHtml(entry.report, entry.cert, entry.confidence, entry.caseText);
+  document.getElementById('reportOut').style.display = 'block';
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('reportOut').innerHTML = html;
+  document.getElementById('reportTabContent').innerHTML = html;
+
+  document.querySelectorAll('.tab')[0].click();
+}
+
+// ── PDF DOWNLOAD ──
+async function downloadPdf() {
+  if (!lastReport || !lastCertificate || isDownloadingPdf) return;
+  isDownloadingPdf = true;
+  const btn = document.getElementById('pdfBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Generating PDF...'; }
+
+  try {
+    const response = await fetch('/api/pdf', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ report: lastReport, certificate: lastCertificate, confidence: lastConfidence })
+    });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.error || `PDF error ${response.status}`);
+    }
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `Chiron-Report-${lastCertificate.reportId}.pdf`;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
+  } catch (err) {
+    alert(`PDF generation failed: ${err.message}`);
+  }
+
+  isDownloadingPdf = false;
+  if (btn) { btn.disabled = false; btn.textContent = 'Download PDF →'; }
+}
+
+function copyReport() {
+  if (!lastReport) return;
+  const text = lastReport + (lastCertificate ? `\n\n---\nReport ID: ${lastCertificate.reportId}\nSHA-256: ${lastCertificate.reportHash}\nTimestamp: ${lastCertificate.timestamp}` : '');
+  navigator.clipboard.writeText(text).then(() => {
+    document.querySelectorAll('.action-btn').forEach(b => {
+      if (b.textContent === 'Copy Text') { b.textContent = 'Copied ✓'; setTimeout(() => b.textContent = 'Copy Text', 2000); }
+    });
+  });
+}
+
+function newAnalysis() {
+  document.getElementById('caseInput').value = '';
+  document.getElementById('reportOut').style.display = 'none';
+  document.getElementById('emptyState').style.display = 'flex';
+  lastReport = ''; lastCertificate = null; lastConfidence = null;
+  document.querySelectorAll('.tab')[0].click();
+}
 </script>
 </body>
 </html>

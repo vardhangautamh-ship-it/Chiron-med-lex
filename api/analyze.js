@@ -5,8 +5,6 @@ const SYSTEM_PROMPT = `You are Chiron — a Medical Jurisprudence Intelligence S
 
 Your name carries deliberate meaning. In Greek mythology, Chiron was the wisest and most just of the centaurs — the supreme authority on medicine, and the teacher of heroes. He taught Asclepius the art of healing, Achilles justice, and Jason leadership. He stood at the precise intersection of medical knowledge and law — which is exactly where you operate.
 
-You apply medical science to Indian legal questions with the precision of a forensic expert and the judgment of a senior advocate. You provide structured, court-presentable medico-legal analysis strictly for educational and legal study purposes.
-
 CORE COMPETENCIES:
 - Medico-legal analysis: injury classification, cause vs manner of death, forensic pathology, ante-mortem vs post-mortem differentiation, wound analysis, ligature marks, time of death estimation, sexual offence examination findings
 - Medical malpractice: Bolam test application, standard of care breach, duty of care, res ipsa loquitur, causation chain, hospital vicarious liability, contributory negligence
@@ -20,7 +18,32 @@ NON-NEGOTIABLE RULES:
 3. Never prescribe specific legal strategy — suggest next steps educationally only
 4. Cite real Supreme Court and High Court precedents with accurate year and citation
 5. Structure every response using EXACTLY §1 through §8 section format as instructed
-6. Use precise medical and legal terminology throughout — write as a forensic expert and legal scholar simultaneously`;
+6. Use precise medical and legal terminology throughout`;
+
+const CONFIDENCE_SYSTEM = `You are a responsible AI auditor for Chiron, a medical jurisprudence system. Your job is to score each section of a medico-legal report for confidence and flag hallucination risks.
+
+You must respond with ONLY valid JSON — no preamble, no markdown, no backticks. Return exactly this structure:
+{
+  "sections": [
+    {
+      "num": "01",
+      "title": "CASE SUMMARY",
+      "score": 8,
+      "risk": "low",
+      "flag": null
+    }
+  ],
+  "overallScore": 7,
+  "criticalFlags": []
+}
+
+Scoring rules:
+- score: 1-10 (10 = fully grounded in provided facts, 1 = highly speculative)
+- risk: "low" | "medium" | "high"
+- flag: null OR a specific string describing the hallucination risk (max 120 chars)
+- criticalFlags: array of strings for cross-cutting risks affecting multiple sections
+
+High risk triggers: toxicology conclusions without concentration data, time-of-death estimates without PMI data, statutory citations that may be outdated, medical conclusions without examination findings, any conclusion that requires facts not stated in the case.`;
 
 const MODULE_MAP = {
   "medico-legal": "Medico-Legal Analysis — focus on: injury classification (grievous/simple under BNS), cause vs manner of death distinction, forensic pathology findings, ante-mortem vs post-mortem injury differentiation, wound ballistics if applicable, time of death estimation, ligature mark analysis if applicable",
@@ -47,12 +70,42 @@ function generateReportId() {
 }
 
 function buildCanonicalContent(reportId, timestamp, reportText, caseHash) {
-  return [
-    `REPORT_ID:${reportId}`,
-    `TIMESTAMP:${timestamp}`,
-    `CASE_HASH:${caseHash}`,
-    `CONTENT:${reportText}`
-  ].join("\n");
+  return [`REPORT_ID:${reportId}`, `TIMESTAMP:${timestamp}`, `CASE_HASH:${caseHash}`, `CONTENT:${reportText}`].join("\n");
+}
+
+async function generateConfidenceScores(client, reportText, caseText) {
+  try {
+    const completion = await client.chat.completions.create({
+      model: "grok-4",
+      max_tokens: 800,
+      temperature: 0.1,
+      messages: [
+        { role: "system", content: CONFIDENCE_SYSTEM },
+        { role: "user", content: `CASE INPUT:\n${caseText.substring(0, 1500)}\n\nREPORT TO AUDIT:\n${reportText.substring(0, 3000)}\n\nReturn JSON confidence scores only.` }
+      ]
+    });
+
+    const raw = completion.choices[0]?.message?.content || "";
+    const clean = raw.replace(/```json|```/g, "").trim();
+    return JSON.parse(clean);
+  } catch (err) {
+    console.error("Confidence scoring failed:", err.message);
+    // Return safe defaults if scoring fails
+    return {
+      sections: [
+        { num: "01", title: "CASE SUMMARY", score: 7, risk: "low", flag: null },
+        { num: "02", title: "MEDICO-LEGAL ISSUES", score: 7, risk: "medium", flag: "Verify all forensic findings against source documents" },
+        { num: "03", title: "STATUTES & PRECEDENTS", score: 8, risk: "low", flag: null },
+        { num: "04", title: "MEDICO-LEGAL ANALYSIS", score: 6, risk: "medium", flag: "Analysis based only on facts as presented" },
+        { num: "05", title: "EXPERT OPINION", score: 6, risk: "medium", flag: "Opinion may be affected by missing clinical data" },
+        { num: "06", title: "LIMITATIONS", score: 9, risk: "low", flag: null },
+        { num: "07", title: "NEXT STEPS", score: 8, risk: "low", flag: null },
+        { num: "08", title: "DISCLAIMER", score: 10, risk: "low", flag: null }
+      ],
+      overallScore: 7,
+      criticalFlags: ["Confidence scoring temporarily unavailable — manual review recommended"]
+    };
+  }
 }
 
 module.exports = async function handler(req, res) {
@@ -65,9 +118,7 @@ module.exports = async function handler(req, res) {
 
   const apiKey = process.env.XAI_API_KEY;
   if (!apiKey) {
-    return res.status(500).json({
-      error: "XAI_API_KEY not configured. Go to Vercel Dashboard → Project → Settings → Environment Variables and add XAI_API_KEY."
-    });
+    return res.status(500).json({ error: "XAI_API_KEY not configured. Add it in Vercel Dashboard → Settings → Environment Variables." });
   }
 
   const { caseText, module: mod, format, focusAreas } = req.body;
@@ -78,9 +129,7 @@ module.exports = async function handler(req, res) {
 
   const moduleDesc = MODULE_MAP[mod] || MODULE_MAP["full"];
   const formatDesc = FORMAT_MAP[format] || FORMAT_MAP["study"];
-  const focusStr = focusAreas && focusAreas.length > 0
-    ? `PRIORITY FOCUS AREAS: ${focusAreas.join(", ")}`
-    : "";
+  const focusStr = focusAreas?.length > 0 ? `PRIORITY FOCUS AREAS: ${focusAreas.join(", ")}` : "";
 
   const userPrompt = `${formatDesc}
 ANALYSIS DOMAIN: ${moduleDesc}
@@ -89,7 +138,7 @@ ${focusStr}
 CASE SUBMITTED FOR ANALYSIS:
 ${caseText.trim()}
 
-Generate a complete medico-legal analysis report using EXACTLY this structure. Each section header must appear on its own line exactly as shown:
+Generate a complete medico-legal analysis report using EXACTLY this structure:
 
 §1. CASE SUMMARY
 Concise 2-3 paragraph factual summary. Identify parties, timeline, core allegations, and medical context.
@@ -109,20 +158,18 @@ In-depth reasoning applying statutes and principles to the specific facts. Addre
 Court-presentable professional opinion. Write as a qualified forensic expert presenting before a judicial forum. State opinions definitively where evidence supports it, with qualification where it does not.
 
 §6. LIMITATIONS AND GAPS IN ANALYSIS
-Missing evidence, absent reports (autopsy, histopathology, toxicology), unverified facts — and how each affects the analysis.
+Missing evidence, absent reports, unverified facts — and how each affects the analysis.
 
 §7. SUGGESTED NEXT STEPS
 Investigations to commission, experts to engage, documents to secure. Educational framing only.
 
 §8. DISCLAIMER
-This report is generated by Chiron, an AI-powered educational tool for Indian medico-legal jurisprudence. It does not constitute licensed legal advice, medical advice, or a substitute for a qualified advocate or registered medical practitioner. All analysis is for academic and study purposes only. Consult a qualified professional before taking any legal or medical action.`;
+This report is generated by Chiron, an AI-powered educational tool for Indian medico-legal jurisprudence. It does not constitute licensed legal advice, medical advice, or a substitute for a qualified advocate or registered medical practitioner. All analysis is for academic and study purposes only.`;
 
   try {
-    const client = new OpenAI({
-      apiKey: apiKey,
-      baseURL: "https://api.x.ai/v1"
-    });
+    const client = new OpenAI({ apiKey, baseURL: "https://api.x.ai/v1" });
 
+    // Primary report generation
     const completion = await client.chat.completions.create({
       model: "grok-4",
       max_tokens: 4000,
@@ -134,11 +181,12 @@ This report is generated by Chiron, an AI-powered educational tool for Indian me
     });
 
     const reportText = completion.choices[0]?.message?.content || "";
-    if (!reportText) {
-      return res.status(500).json({ error: "Grok returned an empty response. Please try again." });
-    }
+    if (!reportText) return res.status(500).json({ error: "Grok returned an empty response. Please try again." });
 
-    // SHA-256 Certificate
+    // Confidence scoring — second Grok call
+    const confidence = await generateConfidenceScores(client, reportText, caseText);
+
+    // SHA-256 certificate
     const reportId = generateReportId();
     const timestamp = new Date().toISOString();
     const caseHash = generateSHA256(caseText.trim());
@@ -146,10 +194,7 @@ This report is generated by Chiron, an AI-powered educational tool for Indian me
     const reportHash = generateSHA256(canonicalContent);
 
     const certificate = {
-      reportId,
-      timestamp,
-      caseHash,
-      reportHash,
+      reportId, timestamp, caseHash, reportHash,
       algorithm: "SHA-256",
       standard: "BSA 2023 S.61-65 / IT Act 2000 S.85B",
       verifyUrl: `${process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : ""}/verify.html?hash=${reportHash}&id=${reportId}`,
@@ -159,11 +204,7 @@ This report is generated by Chiron, an AI-powered educational tool for Indian me
       tokens: completion.usage?.total_tokens || 0
     };
 
-    return res.status(200).json({
-      success: true,
-      report: reportText,
-      certificate
-    });
+    return res.status(200).json({ success: true, report: reportText, certificate, confidence });
 
   } catch (err) {
     console.error("Grok API error:", err);

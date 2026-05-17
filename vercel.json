@@ -3,6 +3,7 @@
   "rewrites": [
     { "source": "/api/analyze", "destination": "/api/analyze" },
     { "source": "/api/pdf", "destination": "/api/pdf" },
+    { "source": "/api/hindi", "destination": "/api/hindi" },
     { "source": "/(.*)", "destination": "/$1" }
   ],
   "headers": [
