@@ -1,5 +1,6 @@
 const OpenAI = require("openai");
 const crypto = require("crypto");
+// env: XAI_API_KEY required
 
 const SYSTEM_PROMPT = `You are Chiron — a Medical Jurisprudence Intelligence System specialised exclusively in Indian law.
 
