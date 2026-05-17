@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ROSS — Report Verification</title>
+  <title>Chiron — Report Verification</title>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Playfair+Display:wght@700&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet"/>
   <style>
     *{box-sizing:border-box;margin:0;padding:0;}
@@ -40,7 +40,7 @@
     <svg width="18" height="18" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="9" stroke="#8b6914" stroke-width="1"/><path d="M11 4L12.5 8.5H17L13.2 11.2L14.7 15.5L11 12.8L7.3 15.5L8.8 11.2L5 8.5H9.5Z" fill="#8b6914" opacity=".85"/></svg>
   </div>
   <div>
-    <div class="brand">ROSS</div>
+    <div class="brand">CHIRON</div>
     <div class="sub">Document Integrity Verification</div>
   </div>
 </div>
@@ -48,11 +48,11 @@
 <div class="container">
   <div class="card">
     <h2>Verify Report Integrity</h2>
-    <p>Enter the Report ID, timestamp, case hash, and report content to verify that a ROSS report has not been altered since generation. The SHA-256 hash is computed client-side and compared against the original document hash.</p>
+    <p>Enter the Report ID, timestamp, case hash, and report content to verify that a CHIRON report has not been altered since generation. The SHA-256 hash is computed client-side and compared against the original document hash.</p>
 
     <div class="field">
       <label>Report ID</label>
-      <input type="text" id="reportId" placeholder="ROSS-XXXXXX-XXXXXX"/>
+      <input type="text" id="reportId" placeholder="CHIRON-XXXXXX-XXXXXX"/>
     </div>
 
     <div class="field">
@@ -84,14 +84,14 @@
       <div class="legal-note">
         Verification performed client-side using Web Crypto API (SHA-256, FIPS 180-4).<br>
         Admissibility basis: Bharatiya Sakshya Adhiniyam 2023 §61-65 (electronic records), §65B (certificate of authenticity), IT Act 2000 §85B (presumption of integrity for secure electronic records).<br>
-        Hash match confirms the document has not been altered since generation by ROSS.
+        Hash match confirms the document has not been altered since generation by CHIRON.
       </div>
     </div>
   </div>
 
   <div class="card">
     <h2>How Verification Works</h2>
-    <p style="margin-bottom:8px;">ROSS generates a SHA-256 hash of a canonical string combining the Report ID, timestamp, case hash, and full report text. This hash is embedded in the PDF certificate and can be independently recomputed at any time.</p>
+    <p style="margin-bottom:8px;">CHIRON generates a SHA-256 hash of a canonical string combining the Report ID, timestamp, case hash, and full report text. This hash is embedded in the PDF certificate and can be independently recomputed at any time.</p>
     <p>Any modification to the report — even a single character — produces a completely different hash, proving tampering. This is the basis for electronic record integrity under Indian law.</p>
     <div class="hash-display" style="color:#5a6070;margin-top:12px;">
       Canonical format:<br>
@@ -139,7 +139,7 @@
     if (computedHash.toLowerCase() === expectedHash.toLowerCase()) {
       resultEl.className = 'result verified';
       titleEl.textContent = '✓  VERIFICATION PASSED — Document integrity confirmed';
-      bodyEl.textContent = `Report ID: ${reportId}\nTimestamp: ${timestamp}\nThe computed SHA-256 hash exactly matches the certificate hash. This document has not been altered since generation by ROSS.`;
+      bodyEl.textContent = `Report ID: ${reportId}\nTimestamp: ${timestamp}\nThe computed SHA-256 hash exactly matches the certificate hash. This document has not been altered since generation by CHIRON.`;
     } else {
       resultEl.className = 'result failed';
       titleEl.textContent = '✗  VERIFICATION FAILED — Hash mismatch detected';

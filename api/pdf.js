@@ -111,21 +111,20 @@ module.exports = async function handler(req, res) {
 
     // ── GENERATE QR CODE ──
     const qrData = certificate.verifyUrl ||
-      `ROSS Report | ID: ${certificate.reportId} | SHA-256: ${certificate.reportHash}`;
+      `CHIRON Report | ID: ${certificate.reportId} | SHA-256: ${certificate.reportHash}`;
     const qrDataUrl = await generateQRCode(qrData);
 
     // ── BUILD PDF ──
     const doc = new PDFDocument({
       size: "A4",
       margins: { top: 50, bottom: 60, left: 50, right: 50 },
-      bufferPages: true,
       info: {
-        Title: `ROSS Medico-Legal Report — ${certificate.reportId}`,
-        Author: "ROSS — Medical Jurisprudence Intelligence System",
+        Title: `CHIRON Medico-Legal Report — ${certificate.reportId}`,
+        Author: "CHIRON — Medical Jurisprudence Intelligence System",
         Subject: "Medico-Legal Analysis — Indian Jurisdiction",
         Keywords: "medical jurisprudence, Indian law, BNS 2023, medico-legal",
-        Creator: "ROSS v2.0",
-        Producer: "ROSS v2.0 | Grok 4 | xAI"
+        Creator: "CHIRON v2.0",
+        Producer: "CHIRON v2.0 | Grok 4 | xAI"
       }
     });
 
@@ -149,11 +148,11 @@ module.exports = async function handler(req, res) {
       .fillColor("#0d1017").fill()
       .restore();
 
-    // ROSS title
+    // CHIRON title
     doc.save()
       .font("Helvetica-Bold").fontSize(FS.title)
       .fillColor(BORDER)
-      .text("ROSS", 50, 28)
+      .text("CHIRON", 50, 28)
       .restore();
 
     // Subtitle
@@ -559,7 +558,7 @@ module.exports = async function handler(req, res) {
         .font("Courier").fontSize(7)
         .fillColor("#3a4050")
         .text(
-          `ROSS v2.0 · ${certificate.reportId} · SHA-256: ${certificate.reportHash.substring(0, 24)}...`,
+          `CHIRON v2.0 · ${certificate.reportId} · SHA-256: ${certificate.reportHash.substring(0, 24)}...`,
           50, doc.page.height - 22,
           { width: doc.page.width - 130 }
         )
@@ -583,7 +582,7 @@ module.exports = async function handler(req, res) {
     const pdfBuffer = Buffer.concat(chunks);
 
     res.setHeader("Content-Type", "application/pdf");
-    res.setHeader("Content-Disposition", `attachment; filename="ROSS-Report-${certificate.reportId}.pdf"`);
+    res.setHeader("Content-Disposition", `attachment; filename="CHIRON-Report-${certificate.reportId}.pdf"`);
     res.setHeader("Content-Length", pdfBuffer.length);
     return res.status(200).send(pdfBuffer);
 

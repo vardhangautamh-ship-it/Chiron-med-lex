@@ -1,7 +1,7 @@
 {
-  "name": "ross-legal-ai",
-  "version": "2.0.0",
-  "description": "ROSS — Medical Jurisprudence Intelligence System for Indian Law, powered by Grok 4",
+  "name": "chiron-legal-ai",
+  "version": "1.0.0",
+  "description": "Chiron — Medical Jurisprudence Intelligence System for Indian Law, powered by Grok 4",
   "scripts": {
     "dev": "vercel dev"
   },
