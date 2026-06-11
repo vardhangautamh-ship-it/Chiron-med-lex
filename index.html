@@ -1,12 +1,10 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chiron — Medical Jurisprudence Intelligence</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<meta name="description" content="Chiron — Medical Jurisprudence Intelligence System for Indian Law. Powered by Grok 4.">
 <style>
 :root {
   --bg-base:    #050d1a;
@@ -454,125 +452,119 @@ input, textarea { font: inherit; color: inherit; }
   .confidence__stat { grid-column:1/-1; border-left:0; border-top:1px solid var(--slate-2); padding-left:0; padding-top:14px; }
 }
 </style>
+<style>
+/* ── Additions for unified build (format selector, per-section confidence, scrollable module list) ── */
+.side__scroll { overflow-y:auto; }
+.fmt-row { display:flex; gap:6px; padding:0 6px; }
+.fmt-btn {
+  flex:1; background:var(--bg-card); border:1px solid var(--slate-2); border-radius:var(--radius);
+  color:var(--fg-3); font-family:var(--f-mono); font-size:9.5px; letter-spacing:0.06em;
+  padding:7px 4px; cursor:pointer; text-align:center; text-transform:uppercase; transition:all .15s;
+}
+.fmt-btn:hover { border-color:var(--gold-dark); color:var(--fg-2); }
+.fmt-btn.is-on { background:var(--bg-hover); border-color:var(--gold); color:var(--gold); }
+.sec__conf.is-high b { color:#3a7d55; }
+.sec__conf.is-med  b { color:#c8a020; }
+.sec__conf.is-low  b { color:#c0504f; }
+.sec__flag {
+  font-family:var(--f-mono); font-size:9px; line-height:1.5; color:#c8a020;
+  background:rgba(200,160,32,0.07); border:1px solid rgba(200,160,32,0.25);
+  border-radius:6px; padding:6px 10px; margin:8px 0 0;
+}
+.conf-crit {
+  font-family:var(--f-mono); font-size:9.5px; line-height:1.6; color:#c0504f;
+  margin-top:6px;
+}
+.sec__confbar { height:3px; border-radius:2px; margin-top:8px; background:var(--slate-2); overflow:hidden; }
+.sec__confbar > i { display:block; height:100%; border-radius:2px; }
+.hindi-block {
+  background:rgba(91,134,184,0.07); border:1px solid rgba(91,134,184,0.3); border-radius:var(--radius);
+  padding:16px; margin-top:14px;
+}
+.hindi-block__t {
+  font-family:var(--f-mono); font-size:9.5px; letter-spacing:0.1em; text-transform:uppercase;
+  color:var(--steel-blue); margin-bottom:10px;
+}
+.hindi-block__body { font-family:var(--f-serif); font-size:15px; line-height:2; color:var(--fg-2); }
+</style>
 </head>
 <body>
 <div id="root"></div>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel" data-presets="react">
+const { useState, useMemo, useEffect, useRef, useCallback } = React;
 
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
-
-<script type="text/babel">
-// ── CONSTANTS ────────────────────────────────────────────────────────────────
-
+// ── 9 UNIFIED MODULES (each maps to a genuinely distinct backend prompt) ──
 const MODULES = [
-  { id:'analyse',  label:'Case Analysis',      icon:'scales',  kbd:'1', api:'full' },
-  { id:'inquest',  label:'Inquest Brief',      icon:'doc',     kbd:'2', api:'medico-legal' },
-  { id:'autopsy',  label:'Autopsy Inference',  icon:'pulse',   kbd:'3', api:'medico-legal' },
-  { id:'toxic',    label:'Toxicology',         icon:'flask',   kbd:'4', api:'medico-legal' },
-  { id:'tox-bnss', label:'BNSS Cross-Ref',     icon:'book',    kbd:'5', api:'regulations' },
-  { id:'precept',  label:'Precedent Search',   icon:'search',  kbd:'6', api:'expert' },
-  { id:'archive',  label:'Archive',            icon:'archive', kbd:'7', api:'full' },
+  { id:'full',        label:'Full Report',       icon:'scales',  kbd:'1', api:'full' },
+  { id:'medico',      label:'Medico-Legal',      icon:'pulse',   kbd:'2', api:'medico-legal' },
+  { id:'malpractice', label:'Malpractice',       icon:'cross',   kbd:'3', api:'malpractice' },
+  { id:'regs',        label:'Regulations & Ethics', icon:'doc',  kbd:'4', api:'regulations' },
+  { id:'expert',      label:'Expert Witness',    icon:'gavel',   kbd:'5', api:'expert' },
+  { id:'inquest',     label:'Inquest Brief',     icon:'book',    kbd:'6', api:'inquest' },
+  { id:'autopsy',     label:'Autopsy Inference', icon:'autopsy', kbd:'7', api:'autopsy' },
+  { id:'toxic',       label:'Toxicology',        icon:'flask',   kbd:'8', api:'toxicology' },
+  { id:'precedent',   label:'Precedent Search',  icon:'search',  kbd:'9', api:'precedent' },
+];
+
+const FORMATS = [
+  { id:'court', label:'Court' },
+  { id:'study', label:'Study' },
+  { id:'brief', label:'Brief' },
 ];
 
 const STATUTES = [
-  'IPC §299','IPC §300','IPC §304','IPC §304A','IPC §307','IPC §319',
-  'BNS §103','BNS §105','BNS §106',
-  'BNSS §174','BNSS §176','BNSS §194',
-  'IEA §32','IEA §45','BSA §39','CrPC §174'
+  'BNS §103','BNS §105','BNS §106','BNS §115',
+  'BNSS §174','BNSS §194','BNSS §196',
+  'BSA §39','BSA §45',
+  'IPC §299','IPC §300','IPC §304A','IEA §32','NMC 2019','MTP 2021','POCSO 2012'
 ];
 
 const EXAMPLES = [
-  { id:'MJ-2024-0118', text:'32yo female, ligature mark high & oblique, hyoid intact' },
-  { id:'MJ-2024-0072', text:'Burns on chest, soot in trachea — bride dying declaration' },
-  { id:'MJ-2024-0211', text:'RTA pedestrian, contre-coup injury, BAC 142mg%' },
-  { id:'MJ-2024-0309', text:'Custodial death, contusions on back, frothy nasal discharge' },
-  { id:'MJ-2024-0144', text:'Stab wound 4th intercostal, cardiac tamponade' },
-  { id:'MJ-2024-0227', text:'Pesticide ingestion, miosis, hypersalivation, fasciculations' },
+  { id:'MJ-DEATH-01', label:'Anaesthesia death', text:`24yo female, elective septoplasty, 11 Feb 2025. ASA-I. No pre-op ECG despite hospital SOP. GA induced 9:15AM (propofol, fentanyl, atracurium). 9:52AM sudden tachycardia, falling EtCO2 and SpO2. Anaesthesia record blank 9:52-10:08AM. Declared dead 10:47AM. PM: no anatomical cause, pulmonary oedema, heart normal, no PE. Tryptase not collected; no frozen muscle sample. Capnography alarm logged 9:49AM, three min before first documented response. Dantrolene absent from theatre. Generic single-page consent. Advise on cause/manner of death, standard of care, consent adequacy, criminal vs civil liability, and significance of missing samples.` },
+  { id:'MJ-MISDX-01', label:'Missed dissection', text:`41yo male, ED 11:20PM 6 Mar 2025, tearing chest pain to back, BP 168/104 right arm, no left-arm reading. Dx "ACS — rule out MI", started aspirin+clopidogrel+heparin. Chest X-ray 11:55PM widened mediastinum, not reviewed by radiologist till morning. No CT aortogram, no cardiology escalation overnight. 4:50AM collapse, tamponade on echo, CT confirmed Stanford Type A dissection. Died 5:38AM. PM: tamponade from ruptured Type A dissection, ante-mortem progressive. Nursing chart gap 2:00-4:30AM. Advise on cause of death, breach of standard of care, criminal negligence threshold, and the "missed diagnosis is common" defence.` },
+  { id:'MJ-CUST-01', label:'Custodial death', text:`34yo male, taken into police detention 9:40PM 14 Mar 2024, found unconscious in cell 6:15AM, declared dead 7:02AM. PM: multiple contusions lower back, bilateral upper arms, inner thighs; 4cm parietal laceration; left 3rd/4th rib fractures; haemoperitoneum; bilateral conjunctival petechiae; hyoid intact. Police claim fall from bunk. Two-hour gap between detention and jail admission. No CCTV. No magistrate informed within 24h. No medical exam at admission. Advise on cause of death, consistency with the fall account, inquest obligations, and liability.` },
+  { id:'MJ-DOWRY-01', label:'Dowry death', text:`26yo female, found hanging in matrimonial home 8 Nov 2023, 18 months after marriage. Ligature mark inverted-V, incomplete, not encircling; furrow 1.5cm; hyoid fractured. Wrists found bound before police arrival. WhatsApp to mother 6 days prior alleging beating. Dowry demand history. Advise on classification, manner of death (homicidal vs suicidal), applicable sections, and burden of proof.` },
+  { id:'MJ-TOX-01', label:'Suspected poisoning', text:`45yo male, found unconscious at home after dinner party, declared dead. PM: mild cyanosis, unusual gastric odour, conjunctival petechiae, pulmonary oedema. Toxicology (38 days later): chlorpyrifos 2.3 mcg/g liver, reduced cholinesterase, ethanol nil. Business dispute motive; deceased owned a farmhouse with pesticide access. Advise on whether the concentration is consistent with fatal poisoning, accidental vs homicidal exposure, the organophosphate syndrome, and chain-of-custody integrity.` },
+  { id:'MJ-NEO-01', label:'Neonatal death', text:`Term neonate, 38 weeks, normal delivery 12 Jan 2024. APGAR 6 at 1min, 8 at 5min. At 4h grunting and subcostal retractions noted; resident not documented as examining. At 6h unresponsive; died 7h. PM: bilateral atelectasis, hyaline membranes on histology, Grade II IVH. No monitoring records 1h-4h. Advise on whether the death was preventable and whether the documentation/monitoring failures constitute negligence.` },
 ];
 
-const SAMPLE_PROMPT = `Deceased: 32yo female, found suspended from ceiling fan in matrimonial home.
-Ligature: nylon dupatta, mark high & oblique, above thyroid cartilage.
-Hyoid bone intact, no fracture. Tongue protruded, petechiae in conjunctivae.
-History: marital discord, dowry complaint filed 11 months prior u/s 498A IPC.
-Death within 7 years of marriage. No suicide note.
-PM interval ~6h. Family alleges homicide; in-laws claim suicide.
-Advise: classification, applicable sections under BNS / BNSS, evidentiary weight of medical findings, and burden of proof under §113B IEA.`;
+const SAMPLE = EXAMPLES[0].text;
 
-const LOADING_STEPS = [
-  'Parse fact pattern',
-  'Index statutes (BNS · BNSS · IEA · BSA)',
-  'Retrieve precedents',
-  'Forensic inference',
-  'Draft brief',
-  'Sign & hash',
-];
+const LOADING_STEPS = ['Parse fact pattern','Index statutes','Retrieve precedents','Forensic inference','Audit confidence','Sign & hash'];
 
-// ── HELPERS ──────────────────────────────────────────────────────────────────
-
+// ── HELPERS ──
 function parseReport(text) {
-  const parts = text.split(/\n(?=§\d+\.)/);
-  return parts.map(part => {
-    const match = part.match(/^§(\d+)\.\s*([^\n]+)\n?([\s\S]*)/);
-    if (!match) return null;
-    return {
-      n: `§ ${match[1].padStart(2,'0')}`,
-      numRaw: parseInt(match[1]),
-      title: match[2].trim(),
-      body: match[3].trim(),
-    };
+  return text.split(/\n(?=§\d+\.)/).map(part => {
+    const m = part.match(/^§(\d+)\.\s*([^\n]+)\n?([\s\S]*)/);
+    if (!m) return null;
+    return { n:`§${m[1].padStart(2,'0')}`, numRaw:parseInt(m[1]), title:m[2].trim(), body:m[3].trim() };
   }).filter(Boolean);
 }
-
-function calcConfidence(sections, tokens) {
-  const base = 68;
-  const sectionBonus = Math.min(sections.length * 2.5, 20);
-  const tokenBonus   = Math.min(Math.floor(tokens / 800), 7);
-  return Math.min(95, Math.round(base + sectionBonus + tokenBonus));
-}
-
 function generateCaseId() {
-  const now = new Date();
-  const y = now.getFullYear();
-  const m = String(now.getMonth()+1).padStart(2,'0');
-  const d = String(now.getDate()).padStart(2,'0');
-  const r = Math.random().toString(36).slice(2,5).toUpperCase();
+  const n=new Date(), y=n.getFullYear(), m=String(n.getMonth()+1).padStart(2,'0'), d=String(n.getDate()).padStart(2,'0');
+  const r=Math.random().toString(36).slice(2,5).toUpperCase();
   return `MJ-${y}-${m}${d}-${r}`;
 }
+function fmtTimestamp(iso){ if(!iso)return''; return new Date(iso).toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'})+' IST'; }
+function nowIST(){ return new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false,timeZone:'Asia/Kolkata'})+' IST'; }
+function tierFor(score){ return score>=8?'high':score>=6?'med':'low'; }
+function tierLabel(score){ return score>=8?'HIGH':score>=6?'MODERATE':'LOW'; }
+function barColor(score){ return score>=8?'#3a7d55':score>=6?'#c8a020':'#c0504f'; }
 
-function fmtTimestamp(iso) {
-  if (!iso) return '';
-  return new Date(iso).toLocaleString('en-IN', {
-    day:'2-digit', month:'short', year:'numeric',
-    hour:'2-digit', minute:'2-digit', hour12:true, timeZone:'Asia/Kolkata'
-  }) + ' IST';
-}
-
-function nowIST() {
-  return new Date().toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false, timeZone:'Asia/Kolkata' }) + ' IST';
-}
-
-// ── SEAL SVG ─────────────────────────────────────────────────────────────────
-
-function ChironSeal({ size = 32 }) {
-  const id = React.useId();
+// ── SEAL ──
+const useId = React.useId || (() => useMemo(() => 'id'+Math.random().toString(36).slice(2,8), []));
+function ChironSeal({ size=32 }) {
+  const id = useId();
   return (
     <svg width={size} height={size} viewBox="0 0 48 48" aria-label="Chiron seal">
-      <defs>
-        <linearGradient id={`g-${id}`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%"   stopColor="#e8c87a"/>
-          <stop offset="55%"  stopColor="#c9a84c"/>
-          <stop offset="100%" stopColor="#a07830"/>
-        </linearGradient>
-      </defs>
-      <circle cx="24" cy="24" r="22"   fill="none" stroke={`url(#g-${id})`} strokeWidth="0.9"/>
+      <defs><linearGradient id={`g-${id}`} x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stopColor="#e8c87a"/><stop offset="55%" stopColor="#c9a84c"/><stop offset="100%" stopColor="#a07830"/>
+      </linearGradient></defs>
+      <circle cx="24" cy="24" r="22" fill="none" stroke={`url(#g-${id})`} strokeWidth="0.9"/>
       <circle cx="24" cy="24" r="19.5" fill="none" stroke="#c9a84c" strokeOpacity="0.35" strokeWidth="0.5"/>
-      <g fill="#c9a84c">
-        <circle cx="24" cy="3.6"  r="0.7"/>
-        <circle cx="24" cy="44.4" r="0.7"/>
-        <circle cx="3.6"  cy="24" r="0.7"/>
-        <circle cx="44.4" cy="24" r="0.7"/>
-      </g>
       <g stroke={`url(#g-${id})`} fill="none" strokeWidth="1.1" strokeLinecap="round">
         <line x1="24" y1="11" x2="24" y2="36.5"/>
         <circle cx="24" cy="10" r="1.3" fill="#c9a84c" stroke="none"/>
@@ -585,41 +577,46 @@ function ChironSeal({ size = 32 }) {
   );
 }
 
-// ── MODULE ICON ───────────────────────────────────────────────────────────────
-
+// ── MODULE ICON ──
 function ModIcon({ name }) {
   const p = { width:16, height:16, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:1.6, strokeLinecap:'round', strokeLinejoin:'round' };
-  switch(name) {
+  switch(name){
     case 'scales':  return <svg {...p}><path d="M12 3v18M5 21h14M7 8l-3 7a3 3 0 0 0 6 0L7 8zm10 0l-3 7a3 3 0 0 0 6 0l-3-7zM7 8h10"/></svg>;
     case 'doc':     return <svg {...p}><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>;
     case 'pulse':   return <svg {...p}><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>;
     case 'flask':   return <svg {...p}><path d="M9 3h6M10 3v6L4 19a2 2 0 0 0 1.7 3h12.6a2 2 0 0 0 1.7-3L14 9V3"/><path d="M6.5 15h11"/></svg>;
     case 'book':    return <svg {...p}><path d="M4 4h11a3 3 0 0 1 3 3v14H7a3 3 0 0 1-3-3V4z"/><path d="M4 18a3 3 0 0 1 3-3h11"/></svg>;
     case 'search':  return <svg {...p}><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>;
-    case 'archive': return <svg {...p}><path d="M3 5h18v4H3zM5 9v11h14V9M10 13h4"/></svg>;
+    case 'cross':   return <svg {...p}><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/></svg>;
+    case 'gavel':   return <svg {...p}><path d="M14 3l7 7-3 3-7-7zM11 6l-7 7M3 21h8M6.5 13.5l4 4"/></svg>;
+    case 'autopsy': return <svg {...p}><circle cx="12" cy="6" r="3"/><path d="M12 9v8M8 13h8M9 21l3-4 3 4"/></svg>;
     default: return null;
   }
 }
 
-// ── SIDEBAR ───────────────────────────────────────────────────────────────────
-
-function Sidebar({ active, onModule, open, onClose }) {
-  const recent = React.useMemo(() => {
-    try { return JSON.parse(localStorage.getItem('chiron-recent') || '[]').slice(0,4); } catch { return []; }
-  }, []);
+// ── SIDEBAR ──
+function Sidebar({ active, onModule, format, onFormat, open, onClose }) {
+  const recent = useMemo(() => { try { return JSON.parse(localStorage.getItem('chiron-recent')||'[]').slice(0,4); } catch { return []; } }, []);
   return (
-    <aside className={`app__side side ${open ? 'is-open' : ''}`}>
-      <div className="side__inner">
+    <aside className={`app__side side ${open?'is-open':''}`}>
+      <div className="side__inner side__scroll">
         <div>
           <div className="side__lbl">Modules</div>
           {MODULES.map(m => (
-            <button key={m.id} className={`mod ${active===m.id?'is-active':''}`}
-              onClick={() => { onModule(m.id); onClose?.(); }}>
+            <button key={m.id} className={`mod ${active===m.id?'is-active':''}`} onClick={() => { onModule(m.id); onClose && onClose(); }}>
               <span className="mod__ic"><ModIcon name={m.icon}/></span>
               <span>{m.label}</span>
               <span className="mod__kbd">⌘ {m.kbd}</span>
             </button>
           ))}
+        </div>
+        <div>
+          <div className="side__lbl">Output Format</div>
+          <div className="fmt-row">
+            {FORMATS.map(f => (
+              <button key={f.id} className={`fmt-btn ${format===f.id?'is-on':''}`} onClick={() => onFormat(f.id)}>{f.label}</button>
+            ))}
+          </div>
         </div>
         <div>
           <div className="side__lbl">Statutes Bank</div>
@@ -642,26 +639,20 @@ function Sidebar({ active, onModule, open, onClose }) {
       </div>
       <div className="side__foot">
         <div className="side__foot__pwr">⟁  POWERED BY GROK 4</div>
-        <div className="side__foot__ver">CHIRON v3.0 · BUILD {new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'2-digit'}).replace(/\//g,'')}</div>
+        <div className="side__foot__ver">CHIRON v3.1 · UNIFIED</div>
       </div>
     </aside>
   );
 }
 
-// ── HEADER ────────────────────────────────────────────────────────────────────
-
+// ── HEADER ──
 function Header({ onToggleSide }) {
-  const [time, setTime] = React.useState(nowIST);
-  React.useEffect(() => {
-    const id = setInterval(() => setTime(nowIST()), 1000);
-    return () => clearInterval(id);
-  }, []);
+  const [time, setTime] = useState(nowIST);
+  useEffect(() => { const id=setInterval(()=>setTime(nowIST()),1000); return ()=>clearInterval(id); }, []);
   return (
     <header className="app__hdr hdr">
       <button className="mobile-toggle" onClick={onToggleSide} aria-label="Open sidebar">
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6">
-          <path d="M2 4h12M2 8h12M2 12h12"/>
-        </svg>
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
       </button>
       <ChironSeal size={34}/>
       <div className="hdr__title">
@@ -673,80 +664,62 @@ function Header({ onToggleSide }) {
         <span>JURIS · <b>IN-DEL</b></span>
         <span>NODE · <b>CHIRON-A04</b></span>
       </div>
-      <span className="status-badge">
-        <span className="status-badge__dot"/>
-        ACTIVE
-      </span>
+      <span className="status-badge"><span className="status-badge__dot"/>ACTIVE</span>
     </header>
   );
 }
 
-// ── TABS ──────────────────────────────────────────────────────────────────────
-
+// ── TABS ──
 function Tabs({ value, onChange, reportCount }) {
   const tabs = [
-    { id:'brief',    label:'Brief',        count: reportCount || null },
-    { id:'evidence', label:'Evidence Log', count: null },
-    { id:'cites',    label:'Citations',    count: null },
-    { id:'export',   label:'Export',       count: null },
-    { id:'history',  label:'History',      count: null },
+    { id:'brief', label:'Brief', count: reportCount||null },
+    { id:'evidence', label:'Evidence Log', count:null },
+    { id:'cites', label:'Citations', count:null },
+    { id:'export', label:'Export', count:null },
+    { id:'history', label:'History', count:null },
   ];
   return (
     <nav className="tabs" role="tablist">
       {tabs.map(t => (
-        <button key={t.id} role="tab" aria-selected={value===t.id}
-          className={`tab ${value===t.id?'is-active':''}`}
-          onClick={() => onChange(t.id)}>
-          {t.label}
-          {t.count != null && <span className="tab__count">{t.count}</span>}
+        <button key={t.id} role="tab" aria-selected={value===t.id} className={`tab ${value===t.id?'is-active':''}`} onClick={() => onChange(t.id)}>
+          {t.label}{t.count!=null && <span className="tab__count">{t.count}</span>}
         </button>
       ))}
     </nav>
   );
 }
 
-// ── COMPOSER ──────────────────────────────────────────────────────────────────
-
-function SettingToggle({ label, defaultOn=false, onChange }) {
-  const [on, setOn] = React.useState(defaultOn);
-  const toggle = () => { const v = !on; setOn(v); onChange?.(v); };
+// ── SETTING TOGGLE (now controlled) ──
+function SettingToggle({ label, on, onChange }) {
   return (
-    <button className={`toggle ${on?'is-on':''}`} onClick={toggle}>
-      <span className="toggle__sw"/>
-      {label}
+    <button className={`toggle ${on?'is-on':''}`} onClick={() => onChange(!on)}>
+      <span className="toggle__sw"/>{label}
     </button>
   );
 }
 
-function Composer({ value, onChange, onSubmit, onClear, busy, activeModule }) {
+// ── COMPOSER ──
+function Composer({ value, onChange, onSubmit, onClear, busy, activeModule, opts, setOpts }) {
   const mod = MODULES.find(m => m.id === activeModule) || MODULES[0];
-  const caseId = React.useMemo(generateCaseId, []);
+  const caseId = useMemo(generateCaseId, []);
   return (
     <div className="comp">
       <div className="comp__head">
         <div>
           <div className="comp__h">Medical Jurisprudence Brief</div>
-          <div className="comp__sub" style={{ marginTop:4 }}>
-            {mod.label} · Submit a clinical-forensic fact pattern · Indian statute
-          </div>
+          <div className="comp__sub" style={{ marginTop:4 }}>{mod.label} · Submit a clinical-forensic fact pattern · Indian statute</div>
         </div>
-        <div className="comp__case">
-          <span>NEXT FILING</span>
-          <b>{caseId}</b>
-        </div>
+        <div className="comp__case"><span>NEXT FILING</span><b>{caseId}</b></div>
       </div>
 
       <div className="textarea-wrap">
-        <textarea
-          className="textarea"
-          placeholder="Describe the case — clinical findings, mechanism, circumstances, prior history. Use IPC / BNS / BNSS section numbers where relevant. Chiron will return a court-grade brief with cited authorities."
-          value={value}
-          onChange={e => onChange(e.target.value)}
-        />
+        <textarea className="textarea"
+          placeholder="Describe the case — clinical findings, mechanism, circumstances, prior history, and the date of the incident. Chiron will return a court-grade brief with cited authorities."
+          value={value} onChange={e => onChange(e.target.value)}/>
         <div className="textarea-wrap__foot">
           <span>{value.length.toLocaleString()} characters · ~{Math.ceil(value.length/4).toLocaleString()} tokens</span>
           <div style={{ display:'flex', gap:6 }}>
-            <button onClick={() => onChange(SAMPLE_PROMPT)}>LOAD SAMPLE</button>
+            <button onClick={() => onChange(SAMPLE)}>LOAD SAMPLE</button>
             <button onClick={onClear}>CLEAR</button>
           </div>
         </div>
@@ -756,9 +729,8 @@ function Composer({ value, onChange, onSubmit, onClear, busy, activeModule }) {
         <span className="examples__lbl">Case patterns</span>
         <div className="examples__row">
           {EXAMPLES.map(ex => (
-            <button key={ex.id} className="ex"
-              onClick={() => onChange(`Case ref: ${ex.id}\n\n${ex.text}.\n\nAdvise on classification, applicable BNS / BNSS sections, and evidentiary weight.`)}>
-              <span className="ex__id">{ex.id}</span>{ex.text}
+            <button key={ex.id} className="ex" onClick={() => onChange(ex.text)}>
+              <span className="ex__id">{ex.id}</span>{ex.label}
             </button>
           ))}
         </div>
@@ -766,15 +738,14 @@ function Composer({ value, onChange, onSubmit, onClear, busy, activeModule }) {
 
       <div className="comp__bar">
         <div className="comp__settings">
-          <SettingToggle label="Cite Precedents" defaultOn/>
-          <SettingToggle label="BNS / BNSS Cross-ref" defaultOn/>
-          <SettingToggle label="Hindi Translation"/>
-          <SettingToggle label="Forensic Timeline" defaultOn/>
+          <SettingToggle label="Cite Precedents" on={opts.citePrecedents} onChange={v => setOpts(o => ({...o, citePrecedents:v}))}/>
+          <SettingToggle label="BNS / BNSS Cross-ref" on={opts.crossRef} onChange={v => setOpts(o => ({...o, crossRef:v}))}/>
+          <SettingToggle label="Hindi Translation" on={opts.hindi} onChange={v => setOpts(o => ({...o, hindi:v}))}/>
+          <SettingToggle label="Forensic Timeline" on={opts.forensicTimeline} onChange={v => setOpts(o => ({...o, forensicTimeline:v}))}/>
         </div>
         <div style={{ display:'flex', gap:10 }}>
-          <button className="btn btn--ghost">Save Draft</button>
-          <button className="btn btn--primary" onClick={onSubmit}
-            disabled={busy || value.trim().length < 12}>
+          <button className="btn btn--ghost" onClick={onClear}>Clear</button>
+          <button className="btn btn--primary" onClick={onSubmit} disabled={busy || value.trim().length < 12}>
             {busy ? 'Analysing…' : <>Generate Brief <span style={{marginLeft:2}}>↗</span></>}
           </button>
         </div>
@@ -783,19 +754,16 @@ function Composer({ value, onChange, onSubmit, onClear, busy, activeModule }) {
   );
 }
 
-// ── LOADING STATE ─────────────────────────────────────────────────────────────
-
+// ── LOADING ──
 function LoadingState({ progress }) {
-  const stepIdx = Math.min(LOADING_STEPS.length-1, Math.floor(progress / (100/LOADING_STEPS.length)));
+  const stepIdx = Math.min(LOADING_STEPS.length-1, Math.floor(progress/(100/LOADING_STEPS.length)));
   return (
     <div className="loading">
       <div className="loading__lbl">
         <span>CHIRON IS ANALYSING YOUR CASE VIA GROK 4</span>
         <span className="loading__lbl__dots"><i/><i/><i/></span>
       </div>
-      <div className="loading__track">
-        <div className="loading__fill" style={{ width:`${progress}%` }}/>
-      </div>
+      <div className="loading__track"><div className="loading__fill" style={{ width:`${progress}%` }}/></div>
       <div className="loading__steps">
         {LOADING_STEPS.map((s,i) => (
           <span key={s} className={`lstep ${i<stepIdx?'is-done':''} ${i===stepIdx?'is-active':''}`}>
@@ -803,67 +771,62 @@ function LoadingState({ progress }) {
           </span>
         ))}
       </div>
-      <div style={{ textAlign:'center', fontFamily:'var(--f-mono)', fontSize:10, color:'var(--fg-faint)', letterSpacing:'0.18em' }}>
-        CHIRON IS REASONING OVER YOUR CASE · GROK 4 · xAI
-      </div>
     </div>
   );
 }
 
-// ── REPORT COMPONENTS ─────────────────────────────────────────────────────────
-
-function ConfidenceBlock({ score, sections, tokens, module: mod }) {
-  const [animated, setAnimated] = React.useState(0);
-  React.useEffect(() => {
-    const t = setTimeout(() => setAnimated(score), 100);
-    return () => clearTimeout(t);
-  }, [score]);
-  const tier = score >= 85 ? 'HIGH' : score >= 70 ? 'MODERATE' : 'LOW';
+// ── OVERALL CONFIDENCE ──
+function ConfidenceBlock({ confidence, sections, tokens, module }) {
+  const score = confidence?.overallScore || 7;
+  const [animated, setAnimated] = useState(0);
+  useEffect(() => { const t=setTimeout(()=>setAnimated(score*10),100); return ()=>clearTimeout(t); }, [score]);
+  const crit = confidence?.criticalFlags || [];
   return (
     <div className="confidence" style={{ flex:'0 0 100%', marginTop:14 }}>
       <div className="confidence__score">
-        <div className="confidence__score__num">
-          {score}<span style={{ fontSize:22, color:'var(--gold-dark)', marginLeft:4 }}>/100</span>
-        </div>
+        <div className="confidence__score__num">{score}<span style={{ fontSize:22, color:'var(--gold-dark)', marginLeft:4 }}>/10</span></div>
         <div className="confidence__score__lbl">Overall Confidence</div>
       </div>
       <div className="confidence__bar">
         <div className="confidence__bar__top">
           <span>Calibrated Confidence</span>
-          <b>{tier} · MEDICO-LEGAL CORRO. REQ'D</b>
+          <b>{tierLabel(score)} · MEDICO-LEGAL CORRO. REQ'D</b>
         </div>
         <div className="confidence__bar__track">
-          <div className="confidence__bar__fill" style={{ width:`${animated}%` }}/>
+          <div className="confidence__bar__fill" style={{ width:`${animated}%`, background:barColor(score) }}/>
         </div>
-        <div className="confidence__bar__flag">
-          Corroborate findings with primary clinical records and registered practitioner review.
-        </div>
+        {crit.length > 0
+          ? <div className="conf-crit">⚠ {crit.join(' · ')}</div>
+          : <div className="confidence__bar__flag">Corroborate findings with primary clinical records and registered practitioner review.</div>}
       </div>
       <div className="confidence__stat">
         <div className="confidence__stat__row"><span>Sections</span><b>{sections}</b></div>
         <div className="confidence__stat__row"><span>Tokens</span><b>{tokens?.toLocaleString() || '—'}</b></div>
-        <div className="confidence__stat__row"><span>Module</span><b>{(mod||'FULL').toUpperCase()}</b></div>
+        <div className="confidence__stat__row"><span>Module</span><b>{(module||'FULL').toUpperCase()}</b></div>
       </div>
     </div>
   );
 }
 
-function ReportSection({ sec, idx }) {
-  const confScore = Math.max(75, Math.min(96, 90 - idx * 2 + (sec.body.length > 400 ? 3 : 0)));
+// ── REPORT SECTION (real confidence from auditor) ──
+function ReportSection({ sec, conf }) {
+  const score = conf?.score;
+  const tier = score != null ? tierFor(score) : null;
   return (
     <div className="sec">
       <div className="sec__hd">
         <span className="sec__num">{sec.n}</span>
         <span className="sec__title">{sec.title}</span>
-        <span className="sec__conf"><b>{confScore}%</b> CONFIDENCE</span>
+        {score != null && <span className={`sec__conf is-${tier}`}><b>{score}/10</b> {(conf.risk||'').toUpperCase()}</span>}
       </div>
-      <div className="finding">
-        <div className="finding__body">{sec.body}</div>
-      </div>
+      {score != null && <div className="sec__confbar"><i style={{ width:`${score*10}%`, background:barColor(score) }}/></div>}
+      {conf?.flag && <div className="sec__flag">⚠ {conf.flag}</div>}
+      <div className="finding"><div className="finding__body">{sec.body}</div></div>
     </div>
   );
 }
 
+// ── CERTIFICATE ──
 function CertificateBlock({ cert }) {
   return (
     <div className="cert">
@@ -873,37 +836,22 @@ function CertificateBlock({ cert }) {
           <div className="cert__hd__sub">SHA-256 · Auditable Chain of Custody · BSA 2023 §61-65</div>
         </div>
         <span className="cert__pill">
-          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M2.5 6.2l2.4 2.4 4.6-5"/>
-          </svg>
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2.5 6.2l2.4 2.4 4.6-5"/></svg>
           HASH VERIFIED
         </span>
       </div>
       <div className="cert__grid">
-        <div className="cert__k">Report ID</div>
-        <div className="cert__v cert__v--soft">{cert.reportId}</div>
-
-        <div className="cert__k">Timestamp</div>
-        <div className="cert__v cert__v--soft">{cert.timestamp}</div>
-
-        <div className="cert__k">Case Input Hash</div>
-        <div className="cert__v">{cert.caseHash}</div>
-
-        <div className="cert__k">Document Hash</div>
-        <div className="cert__v">{cert.reportHash}</div>
-
-        <div className="cert__k">Algorithm</div>
-        <div className="cert__v cert__v--soft">SHA-256 (FIPS 180-4)</div>
-
-        <div className="cert__k">AI Model</div>
-        <div className="cert__v cert__v--soft">{cert.model || 'GROK-4'}</div>
+        <div className="cert__k">Report ID</div><div className="cert__v cert__v--soft">{cert.reportId}</div>
+        <div className="cert__k">Timestamp</div><div className="cert__v cert__v--soft">{cert.timestamp}</div>
+        <div className="cert__k">Case Input Hash</div><div className="cert__v">{cert.caseHash}</div>
+        <div className="cert__k">Document Hash</div><div className="cert__v">{cert.reportHash}</div>
+        <div className="cert__k">Algorithm</div><div className="cert__v cert__v--soft">SHA-256 (FIPS 180-4)</div>
+        <div className="cert__k">AI Model</div><div className="cert__v cert__v--soft">{cert.model || 'GROK-4'}</div>
       </div>
       <div className="cert__sig">
         <div>
           <div className="cert__sig__lbl">Issued under <b>Bharatiya Sakshya Adhiniyam 2023 §63-65 · IT Act 2000 §85B</b></div>
-          <div className="cert__sig__lbl" style={{ marginTop:6 }}>
-            Tamper-evident · machine-verifiable · admissible as electronic record
-          </div>
+          <div className="cert__sig__lbl" style={{ marginTop:6 }}>Tamper-evident · machine-verifiable · admissible as electronic record</div>
         </div>
         <ChironSeal size={60}/>
       </div>
@@ -915,139 +863,109 @@ function Disclaimer() {
   return (
     <div className="disclaimer">
       <b>Statutory Disclaimer</b>
-      Chiron is an artificial intelligence research assistant. Output constitutes neither legal advice
-      nor a medical opinion within the meaning of §45 IEA / §39 BSA. All findings must be independently
-      verified by a registered medical practitioner and an enrolled advocate before any pleading,
-      affidavit, or submission to a Court of competent jurisdiction.
+      Chiron is an artificial intelligence research assistant. Output constitutes neither legal advice nor a medical opinion within the meaning of §45 IEA / §39 BSA. All findings must be independently verified by a registered medical practitioner and an enrolled advocate before any pleading, affidavit, or submission to a Court of competent jurisdiction.
     </div>
   );
 }
 
-function Actions({ onDownloadPDF, pdfBusy, onNewAnalysis }) {
+// ── HINDI (inline, on demand) ──
+function HindiBlock({ reportText }) {
+  const [state, setState] = useState('idle'); // idle | loading | done | error
+  const [hindi, setHindi] = useState('');
+  const [err, setErr] = useState('');
+  const run = async () => {
+    setState('loading'); setErr('');
+    try {
+      const res = await fetch('/api/hindi', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ report: reportText }) });
+      const j = await res.json();
+      if (!res.ok || !j.success) throw new Error(j.error || 'Translation failed');
+      setHindi(j.hindi); setState('done');
+    } catch(e) { setErr(e.message); setState('error'); }
+  };
+  if (state === 'idle') return <button className="btn btn--hindi" onClick={run}>हिंदी अनुवाद</button>;
+  if (state === 'loading') return <div className="hindi-block"><div className="hindi-block__t">हिंदी अनुवाद — अनुवाद हो रहा है…</div></div>;
+  if (state === 'error') return <div className="error-banner"><b>Translation Failed</b>{err}</div>;
+  return <div className="hindi-block"><div className="hindi-block__t">हिंदी सारांश — मुवक्किल / वादी के लिए</div><div className="hindi-block__body">{hindi.split('\n').map((l,i)=><div key={i}>{l}</div>)}</div></div>;
+}
+
+function Actions({ onDownloadPDF, pdfBusy, onNewAnalysis, reportText }) {
   return (
     <div className="actions">
-      <button className="btn btn--primary" onClick={onDownloadPDF} disabled={pdfBusy}>
-        {pdfBusy ? 'Generating PDF…' : '⤓ Download Signed PDF'}
-      </button>
-      <button className="btn btn--secondary">📜 Export Inquest Brief</button>
-      <button className="btn btn--secondary">⚖ Send to Bench Memo</button>
-      <button className="btn btn--hindi">हिन्दी अनुवाद</button>
+      <button className="btn btn--primary" onClick={onDownloadPDF} disabled={pdfBusy}>{pdfBusy ? 'Generating PDF…' : '⤓ Download Signed PDF'}</button>
+      <HindiBlock reportText={reportText}/>
       <button className="btn btn--ghost" onClick={onNewAnalysis}>New Analysis</button>
-      <button className="btn btn--ghost">Copy Citation</button>
     </div>
   );
 }
 
+// ── REPORT ──
 function Report({ data, onDownloadPDF, pdfBusy, onNewAnalysis }) {
-  const { sections, certificate, reportText } = data;
-  const confidence = calcConfidence(sections, certificate?.tokens);
+  const { sections, certificate, reportText, confidence } = data;
   const displayTs = fmtTimestamp(certificate?.timestamp);
-
+  const confFor = (numRaw) => confidence?.sections?.find(s => parseInt(s.num) === numRaw) || null;
   return (
     <section className="report">
       <header className="report__head">
         <div>
-          <div className="report__id" style={{ marginBottom:6 }}>
-            BRIEF <b>{certificate?.reportId || '—'}</b> · FILED {displayTs}
-          </div>
+          <div className="report__id" style={{ marginBottom:6 }}>BRIEF <b>{certificate?.reportId || '—'}</b> · FILED {displayTs}</div>
           <h1>{sections[0]?.title || 'Medico-Legal Analysis Report'}</h1>
-          <div className="report__id" style={{ marginTop:8, color:'var(--fg-faint)' }}>
-            FORUM · Sessions Court · Indian Jurisdiction
-          </div>
+          <div className="report__id" style={{ marginTop:8, color:'var(--fg-faint)' }}>MODULE · {(certificate?.module||'Full Report')} · FORMAT · {(certificate?.format||'study').toUpperCase()} · INDIAN JURISDICTION</div>
         </div>
-        <ConfidenceBlock
-          score={confidence}
-          sections={sections.length}
-          tokens={certificate?.tokens}
-          module={certificate?.module}
-        />
+        <ConfidenceBlock confidence={confidence} sections={sections.length} tokens={certificate?.tokens} module={certificate?.module}/>
       </header>
-
-      {sections.map((s, i) => <ReportSection key={i} sec={s} idx={i}/>)}
-
+      {sections.map((s,i) => <ReportSection key={i} sec={s} conf={confFor(s.numRaw)}/>)}
       <Disclaimer/>
       {certificate && <CertificateBlock cert={certificate}/>}
-      <Actions onDownloadPDF={onDownloadPDF} pdfBusy={pdfBusy} onNewAnalysis={onNewAnalysis}/>
+      <Actions onDownloadPDF={onDownloadPDF} pdfBusy={pdfBusy} onNewAnalysis={onNewAnalysis} reportText={reportText}/>
     </section>
   );
 }
 
-// ── APP SHELL ─────────────────────────────────────────────────────────────────
-
+// ── APP ──
 function App() {
-  const [activeModule, setActiveModule] = React.useState('analyse');
-  const [tab, setTab]         = React.useState('brief');
-  const [text, setText]       = React.useState(SAMPLE_PROMPT);
-  const [phase, setPhase]     = React.useState('idle'); // idle | loading | report | error
-  const [progress, setProgress] = React.useState(0);
-  const [sidebarOpen, setSidebarOpen] = React.useState(false);
-  const [reportData, setReportData]   = React.useState(null);
-  const [errorMsg, setErrorMsg]       = React.useState('');
-  const [pdfBusy, setPdfBusy]         = React.useState(false);
-  const progressRef = React.useRef(null);
+  const [activeModule, setActiveModule] = useState('full');
+  const [format, setFormat] = useState('study');
+  const [tab, setTab] = useState('brief');
+  const [text, setText] = useState(SAMPLE);
+  const [phase, setPhase] = useState('idle');
+  const [progress, setProgress] = useState(0);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [reportData, setReportData] = useState(null);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [pdfBusy, setPdfBusy] = useState(false);
+  const [opts, setOpts] = useState({ citePrecedents:true, crossRef:true, hindi:false, forensicTimeline:true });
+  const progressRef = useRef(null);
 
-  // Animate loading bar up to 90% while waiting for API
-  const startProgress = React.useCallback(() => {
-    setProgress(0);
-    const start = Date.now();
-    const run = () => {
-      const elapsed = Date.now() - start;
-      // Ease to 90% over ~25s, never reaches 100 (API call completes it)
-      const p = Math.min(90, (elapsed / 25000) * 90);
-      setProgress(p);
-      progressRef.current = requestAnimationFrame(run);
-    };
+  const startProgress = useCallback(() => {
+    setProgress(0); const start = Date.now();
+    const run = () => { const p = Math.min(90, ((Date.now()-start)/25000)*90); setProgress(p); progressRef.current = requestAnimationFrame(run); };
     progressRef.current = requestAnimationFrame(run);
   }, []);
-
-  const stopProgress = React.useCallback((toFull = false) => {
-    if (progressRef.current) cancelAnimationFrame(progressRef.current);
-    if (toFull) setProgress(100);
-  }, []);
+  const stopProgress = useCallback((toFull=false) => { if (progressRef.current) cancelAnimationFrame(progressRef.current); if (toFull) setProgress(100); }, []);
 
   const onSubmit = async () => {
     if (text.trim().length < 12) return;
-    setPhase('loading');
-    setTab('brief');
-    setErrorMsg('');
-    startProgress();
-
+    setPhase('loading'); setTab('brief'); setErrorMsg(''); startProgress();
     const mod = MODULES.find(m => m.id === activeModule) || MODULES[0];
-
     try {
       const res = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          caseText: text.trim(),
-          module: mod.api,
-          format: 'study',
-        }),
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ caseText:text.trim(), module:mod.api, format, options:opts })
       });
       const json = await res.json();
       stopProgress(true);
-
-      if (!res.ok || !json.success) {
-        setErrorMsg(json.error || 'Analysis failed. Please try again.');
-        setPhase('error');
-        return;
-      }
-
+      if (!res.ok || !json.success) { setErrorMsg(json.error || 'Analysis failed. Please try again.'); setPhase('error'); return; }
       const sections = parseReport(json.report || '');
-      setReportData({ sections, certificate: json.certificate, reportText: json.report });
-
-      // Save to recent briefs
+      setReportData({ sections, certificate:json.certificate, reportText:json.report, confidence:json.confidence });
       try {
-        const prev = JSON.parse(localStorage.getItem('chiron-recent') || '[]');
+        const prev = JSON.parse(localStorage.getItem('chiron-recent')||'[]');
         const updated = [json.certificate?.reportId, ...prev.filter(x=>x!==json.certificate?.reportId)].slice(0,4);
         localStorage.setItem('chiron-recent', JSON.stringify(updated));
       } catch {}
-
+      // Auto-trigger Hindi is handled inline by the toggle living in the report; keep toggle state available
       setTimeout(() => setPhase('report'), 200);
     } catch (err) {
-      stopProgress();
-      setErrorMsg('Network error: ' + (err.message || 'Could not reach Chiron API.'));
-      setPhase('error');
+      stopProgress(); setErrorMsg('Network error: ' + (err.message || 'Could not reach Chiron API.')); setPhase('error');
     }
   };
 
@@ -1055,90 +973,29 @@ function App() {
     if (!reportData) return;
     setPdfBusy(true);
     try {
-      const res = await fetch('/api/pdf', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ report: reportData.reportText, certificate: reportData.certificate }),
-      });
-      if (!res.ok) {
-        const j = await res.json().catch(() => ({}));
-        alert(j.error || 'PDF generation failed.');
-        return;
-      }
-      const blob = await res.blob();
-      const url  = URL.createObjectURL(blob);
-      const a    = document.createElement('a');
-      a.href = url;
-      a.download = `Chiron-${reportData.certificate?.reportId || 'report'}.pdf`;
-      a.click();
+      const res = await fetch('/api/pdf', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ report: reportData.reportText, certificate: reportData.certificate, confidence: reportData.confidence }) });
+      if (!res.ok) { const j = await res.json().catch(()=>({})); alert(j.error || 'PDF generation failed.'); return; }
+      const blob = await res.blob(); const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = `Chiron-${reportData.certificate?.reportId || 'report'}.pdf`; a.click();
       URL.revokeObjectURL(url);
-    } catch (err) {
-      alert('PDF error: ' + err.message);
-    } finally {
-      setPdfBusy(false);
-    }
+    } catch (err) { alert('PDF error: ' + err.message); } finally { setPdfBusy(false); }
   };
 
-  const onClear = () => {
-    setText('');
-    setPhase('idle');
-    setReportData(null);
-    setErrorMsg('');
-  };
-
-  const onNewAnalysis = () => {
-    setPhase('idle');
-    setReportData(null);
-    setErrorMsg('');
-  };
+  const onClear = () => { setText(''); setPhase('idle'); setReportData(null); setErrorMsg(''); };
+  const onNewAnalysis = () => { setPhase('idle'); setReportData(null); setErrorMsg(''); };
 
   return (
     <div className="app">
       <Header onToggleSide={() => setSidebarOpen(o => !o)}/>
-
-      <Sidebar
-        active={activeModule}
-        onModule={id => { setActiveModule(id); if (phase==='idle') {} }}
-        open={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-      />
+      <Sidebar active={activeModule} onModule={setActiveModule} format={format} onFormat={setFormat} open={sidebarOpen} onClose={() => setSidebarOpen(false)}/>
       <div className={`mobile-overlay ${sidebarOpen?'is-on':''}`} onClick={() => setSidebarOpen(false)}/>
-
       <main className="app__main main">
         <Tabs value={tab} onChange={setTab} reportCount={reportData ? 1 : null}/>
-
-        <Composer
-          value={text}
-          onChange={setText}
-          onSubmit={onSubmit}
-          onClear={onClear}
-          busy={phase==='loading'}
-          activeModule={activeModule}
-        />
-
+        <Composer value={text} onChange={setText} onSubmit={onSubmit} onClear={onClear} busy={phase==='loading'} activeModule={activeModule} opts={opts} setOpts={setOpts}/>
         {phase === 'loading' && <LoadingState progress={progress}/>}
-
-        {phase === 'error' && (
-          <div className="error-banner">
-            <b>Analysis Failed</b>
-            {errorMsg}
-          </div>
-        )}
-
-        {phase === 'report' && reportData && (
-          <Report
-            data={reportData}
-            onDownloadPDF={onDownloadPDF}
-            pdfBusy={pdfBusy}
-            onNewAnalysis={onNewAnalysis}
-          />
-        )}
-
-        {phase === 'idle' && (
-          <div className="idle-state">
-            No brief generated · submit a fact pattern to begin
-          </div>
-        )}
+        {phase === 'error' && <div className="error-banner"><b>Analysis Failed</b>{errorMsg}</div>}
+        {phase === 'report' && reportData && <Report data={reportData} onDownloadPDF={onDownloadPDF} pdfBusy={pdfBusy} onNewAnalysis={onNewAnalysis}/>}
+        {phase === 'idle' && <div className="idle-state">No brief generated · submit a fact pattern to begin</div>}
       </main>
     </div>
   );

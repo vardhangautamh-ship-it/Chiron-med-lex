@@ -1,7 +1,7 @@
 {
   "name": "chiron-legal-ai",
-  "version": "1.0.0",
-  "description": "Chiron — Medical Jurisprudence Intelligence System for Indian Law, powered by Grok 4",
+  "version": "3.1.0",
+  "description": "Chiron \u2014 Medical Jurisprudence Intelligence System (unified 9-module build) for Indian Law, powered by Grok 4",
   "scripts": {
     "dev": "vercel dev"
   },
